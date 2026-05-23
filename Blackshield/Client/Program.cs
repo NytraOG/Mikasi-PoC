@@ -1,6 +1,5 @@
 using Blackshield.Components;
 using Blackshield.Components.Account;
-using Blackshield.Data;
 using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Components.Authorization;
@@ -43,7 +42,7 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
             options.SignIn.RequireConfirmedAccount = true;
             options.Stores.SchemaVersion           = IdentitySchemaVersions.Version3;
         })
-       .AddEntityFrameworkStores<ApplicationDbContext>()
+       .AddEntityFrameworkStores<DefaultContext>()
        .AddSignInManager()
        .AddDefaultTokenProviders();
 

@@ -1,9 +1,7 @@
 @page "/Account/Manage/ExternalLogins"
-
+@using Domain.Data.Entities.Security
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
-@using Blackshield.Data
-@using Domain.Data.Entities.Security
 
 @inject UserManager<ApplicationUser>   UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -80,7 +78,7 @@
     private string? ProviderKey { get; set; }
 
     [SupplyParameterFromQuery]
-    private string? Action { get; set; }
+    private string? Action { get; }
 
     protected override async Task OnInitializedAsync()
     {

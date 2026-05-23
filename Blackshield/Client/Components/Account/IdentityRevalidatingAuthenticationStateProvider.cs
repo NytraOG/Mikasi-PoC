@@ -1,10 +1,9 @@
 using System.Security.Claims;
+using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
-using Blackshield.Data;
-using Domain.Data.Entities.Security;
 
 namespace Blackshield.Components.Account;
 
@@ -31,18 +30,12 @@ internal sealed class IdentityRevalidatingAuthenticationStateProvider(
         var user = await userManager.GetUserAsync(principal);
 
         if (user is null)
-        {
             return false;
-        }
-        else if (!userManager.SupportsUserSecurityStamp)
-        {
+
+        if (!userManager.SupportsUserSecurityStamp)
             return true;
-        }
-        else
-        {
-            var principalStamp = principal.FindFirstValue(options.Value.ClaimsIdentity.SecurityStampClaimType);
-            var userStamp      = await userManager.GetSecurityStampAsync(user);
-            return principalStamp == userStamp;
-        }
+        var principalStamp = principal.FindFirstValue(options.Value.ClaimsIdentity.SecurityStampClaimType);
+        var userStamp      = await userManager.GetSecurityStampAsync(user);
+        return principalStamp == userStamp;
     }
 }

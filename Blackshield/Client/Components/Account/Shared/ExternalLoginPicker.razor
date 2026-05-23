@@ -1,8 +1,6 @@
+@using Domain.Data.Entities.Security
 @using Microsoft.AspNetCore.Authentication
 @using Microsoft.AspNetCore.Identity
-@using Blackshield.Data
-@using Domain.Data.Entities.Security
-
 @inject SignInManager<ApplicationUser> SignInManager
 @inject IdentityRedirectManager        RedirectManager
 
@@ -40,9 +38,6 @@ else
     [SupplyParameterFromQuery]
     private string? ReturnUrl { get; set; }
 
-    protected override async Task OnInitializedAsync()
-    {
-        externalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToArray();
-    }
+    protected override async Task OnInitializedAsync() => externalLogins = (await SignInManager.GetExternalAuthenticationSchemesAsync()).ToArray();
 
 }

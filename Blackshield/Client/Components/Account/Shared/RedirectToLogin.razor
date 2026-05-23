@@ -2,9 +2,6 @@
 
 @code {
 
-    protected override void OnInitialized()
-    {
-        NavigationManager.NavigateTo($"auth/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", forceLoad: true);
-    }
+    protected override void OnInitialized() => NavigationManager.NavigateTo($"auth/login?returnUrl={Uri.EscapeDataString(NavigationManager.Uri)}", true);
 
 }

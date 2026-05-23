@@ -1,10 +1,8 @@
 @page "/Account/Manage/RenamePasskey/{Id}"
-
-@using Blackshield.Data
-@using System.ComponentModel.DataAnnotations
-@using Microsoft.AspNetCore.Identity
 @using System.Buffers.Text
+@using System.ComponentModel.DataAnnotations
 @using Domain.Data.Entities.Security
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser> UserManager
 @inject IdentityRedirectManager      RedirectManager
@@ -46,7 +44,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        Input ??= new();
+        Input ??= new InputModel();
 
         user = (await UserManager.GetUserAsync(HttpContext.User))!;
 
@@ -73,7 +71,6 @@
         if (passkey is null)
         {
             RedirectManager.RedirectToWithStatus("Account/Manage/Passkeys", "Error: The specified passkey could not be found.", HttpContext);
-            return;
         }
     }
 

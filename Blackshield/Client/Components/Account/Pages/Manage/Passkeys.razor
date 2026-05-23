@@ -1,10 +1,7 @@
 @page "/Account/Manage/Passkeys"
-
-@using Blackshield.Data
-@using Microsoft.AspNetCore.Identity
-@using System.ComponentModel.DataAnnotations
 @using System.Buffers.Text
 @using Domain.Data.Entities.Security
+@using Microsoft.AspNetCore.Identity
 
 @inject UserManager<ApplicationUser>   UserManager
 @inject SignInManager<ApplicationUser> SignInManager
@@ -69,17 +66,17 @@ else
     private HttpContext HttpContext { get; set; } = default!;
 
     [SupplyParameterFromForm]
-    private string? Action { get; set; }
+    private string? Action { get; }
 
     [SupplyParameterFromForm]
-    private string? CredentialId { get; set; }
+    private string? CredentialId { get; }
 
     [SupplyParameterFromForm(FormName = "add-passkey")]
     private PasskeyInputModel Input { get; set; } = default!;
 
     protected override async Task OnInitializedAsync()
     {
-        Input ??= new();
+        Input ??= new PasskeyInputModel();
 
         user = await UserManager.GetUserAsync(HttpContext.User);
 
@@ -114,7 +111,7 @@ else
 
         if (currentPasskeys!.Count >= MaxPasskeyCount)
         {
-            RedirectManager.RedirectToCurrentPageWithStatus($"Error: You have reached the maximum number of allowed passkeys.", HttpContext);
+            RedirectManager.RedirectToCurrentPageWithStatus("Error: You have reached the maximum number of allowed passkeys.", HttpContext);
             return;
         }
 

@@ -1,7 +1,6 @@
+using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
-using Blackshield.Data;
-using Domain.Data.Entities.Security;
 
 namespace Blackshield.Components.Account;
 
@@ -13,8 +12,9 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
         SameSite    = SameSiteMode.Strict,
         HttpOnly    = true,
         IsEssential = true,
-        MaxAge      = TimeSpan.FromSeconds(5),
+        MaxAge      = TimeSpan.FromSeconds(5)
     };
+    private string CurrentPath => navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path);
 
     public void RedirectTo(string? uri)
     {
@@ -22,9 +22,7 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
 
         // Prevent open redirects.
         if (!Uri.IsWellFormedUriString(uri, UriKind.Relative))
-        {
             uri = navigationManager.ToBaseRelativePath(uri);
-        }
 
         navigationManager.NavigateTo(uri);
     }
@@ -41,8 +39,6 @@ internal sealed class IdentityRedirectManager(NavigationManager navigationManage
         context.Response.Cookies.Append(StatusCookieName, message, StatusCookieBuilder.Build(context));
         RedirectTo(uri);
     }
-
-    private string CurrentPath => navigationManager.ToAbsoluteUri(navigationManager.Uri).GetLeftPart(UriPartial.Path);
 
     public void RedirectToCurrentPage() => RedirectTo(CurrentPath);
 

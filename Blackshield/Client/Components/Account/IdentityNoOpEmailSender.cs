@@ -1,7 +1,6 @@
+using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Blackshield.Data;
-using Domain.Data.Entities.Security;
 
 namespace Blackshield.Components.Account;
 

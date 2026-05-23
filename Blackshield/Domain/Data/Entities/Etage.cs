@@ -1,7 +1,10 @@
-﻿namespace Domain.Data.Entities;
+﻿using Domain.Data.BaseTypes;
+
+namespace Domain.Data.Entities;
 
 public class Etage : BaseEntity
 {
-    public string          Bezeichnung       { get; set; }
-    public Nutzungseinheit InNutzungseinheit { get; set; }
+    private readonly List<Nutzungseinheit>                nutzungseinheiten = new();
+    public required  string                               Bezeichnung       { get; set; }
+    public           IReadOnlyCollection<Nutzungseinheit> Nutzungseinheiten => nutzungseinheiten;
 }
