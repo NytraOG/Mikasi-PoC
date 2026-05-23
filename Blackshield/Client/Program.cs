@@ -5,6 +5,7 @@ using MudBlazor.Services;
 using Blackshield.Components;
 using Blackshield.Components.Account;
 using Blackshield.Data;
+using Domain.Data.Entities.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 

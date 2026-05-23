@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Components.Server;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Options;
 using Blackshield.Data;
+using Domain.Data.Entities.Security;
 
 namespace Blackshield.Components.Account;
 

@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Identity;
 using Blackshield.Data;
+using Domain.Data.Entities.Security;
 
 namespace Blackshield.Components.Account;
 

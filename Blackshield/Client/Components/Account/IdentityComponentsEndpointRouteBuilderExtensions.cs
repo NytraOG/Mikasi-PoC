@@ -3,6 +3,7 @@ using System.Text.Json;
 using Blackshield.Components.Account.Pages;
 using Blackshield.Components.Account.Pages.Manage;
 using Blackshield.Data;
+using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Components.Authorization;
