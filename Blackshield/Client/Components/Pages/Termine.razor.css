@@ -1,0 +1,110 @@
+.calendar-grid {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    min-height: 600px;
+}
+
+.calendar-col {
+    border-right: 1px solid var(--mud-palette-lines-default);
+    display: flex;
+    flex-direction: column;
+}
+
+.calendar-col:last-child {
+    border-right: none;
+}
+
+.calendar-col-header {
+    padding: 14px 12px;
+    border-bottom: 1px solid var(--mud-palette-lines-default);
+    text-align: center;
+    background-color: var(--mud-palette-surface);
+}
+
+.calendar-col-header .day-name {
+    color: var(--mud-palette-text-secondary);
+    font-size: 0.75rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.calendar-col-header .day-number {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--mud-palette-text-primary);
+    line-height: 1.2;
+    font-family: 'Plus Jakarta Sans', sans-serif;
+}
+
+.calendar-col-header.today .day-number {
+    color: var(--mud-palette-primary);
+    background: rgba(79, 70, 229, 0.10);
+    width: 32px;
+    height: 32px;
+    line-height: 32px;
+    border-radius: 50%;
+    margin: 0 auto;
+    font-size: 1rem;
+}
+
+.calendar-col-body {
+    padding: 8px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.calendar-event {
+    padding: 10px 12px;
+    border-radius: 10px;
+    border-left: 3px solid;
+    background-color: var(--mud-palette-background-gray);
+    cursor: pointer;
+    transition: transform 120ms ease;
+}
+
+.calendar-event:hover {
+    transform: translateX(2px);
+}
+
+.calendar-event.primary {
+    background-color: rgba(79, 70, 229, 0.08);
+    border-left-color: #4F46E5;
+}
+
+.calendar-event.secondary {
+    background-color: rgba(245, 158, 11, 0.10);
+    border-left-color: #F59E0B;
+}
+
+.calendar-event.success {
+    background-color: rgba(16, 185, 129, 0.10);
+    border-left-color: #10B981;
+}
+
+.calendar-event.warning {
+    background-color: rgba(244, 114, 22, 0.10);
+    border-left-color: #F97316;
+}
+
+.event-time {
+    font-size: 0.72rem;
+    font-weight: 700;
+    color: var(--mud-palette-text-primary);
+    letter-spacing: 0.02em;
+}
+
+.event-title {
+    font-size: 0.82rem;
+    font-weight: 600;
+    color: var(--mud-palette-text-primary);
+    margin-top: 2px;
+}
+
+.event-location {
+    font-size: 0.7rem;
+    color: var(--mud-palette-text-secondary);
+    margin-top: 2px;
+}

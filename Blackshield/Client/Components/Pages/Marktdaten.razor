@@ -1,0 +1,90 @@
+@page "/marktdaten"
+
+<PageTitle>Marktdaten · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Marktdaten</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">Aggregierte Mietspiegel-Daten und Trends in deinen Städten.</MudText>
+        </MudStack>
+        <MudStack Row="true" Spacing="2">
+            <MudSelect T="string" Variant="Variant.Outlined" Margin="Margin.Dense" Value="@("alle")" Style="min-width: 180px;">
+                <MudSelectItem Value="@("alle")">Alle Städte</MudSelectItem>
+                <MudSelectItem Value="@("berlin")">Berlin</MudSelectItem>
+                <MudSelectItem Value="@("hamburg")">Hamburg</MudSelectItem>
+                <MudSelectItem Value="@("muenchen")">München</MudSelectItem>
+            </MudSelect>
+            <MudButton StartIcon="@Icons.Material.Outlined.Download" Variant="Variant.Outlined" Color="Color.Default">Bericht (PDF)</MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#4F46E5" Bg="rgba(79, 70, 229, 0.10)" Icon="@Icons.Material.Outlined.Apartment" Label="Ø Kaltmiete / m²" Value="13,40 €"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#10B981" Bg="rgba(16, 185, 129, 0.10)" Icon="@Icons.Material.Outlined.TrendingUp" Label="Veränderung 12 Mt." Value="+4,2 %"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#F59E0B" Bg="rgba(245, 158, 11, 0.10)" Icon="@Icons.Material.Outlined.Schedule" Label="Ø Tage bis Vermietung" Value="18"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#0EA5E9" Bg="rgba(14, 165, 233, 0.10)" Icon="@Icons.Material.Outlined.MarkEmailUnread" Label="Ø Anfragen / Objekt" Value="24"/>
+        </MudItem>
+    </MudGrid>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="8">
+            <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudText Typo="Typo.h6">Mietpreisentwicklung</MudText>
+                    <MudButtonGroup OverrideStyles="false">
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small">1M</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small">6M</MudButton>
+                        <MudButton Variant="Variant.Filled" Color="Color.Primary" Size="Size.Small">1J</MudButton>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small">5J</MudButton>
+                    </MudButtonGroup>
+                </MudStack>
+                <div class="market-chart">
+                    <MudIcon Icon="@Icons.Material.Filled.ShowChart" Size="Size.Large" Color="Color.Primary"/>
+                    <MudText Typo="Typo.caption" Color="Color.Tertiary" Class="mt-2">Liniendiagramm mit historischen Mietpreisen pro m²</MudText>
+                </div>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="4">
+            <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                <MudText Typo="Typo.h6" Class="mb-3">Heißeste Quartiere</MudText>
+                <MudStack Spacing="3">
+                    @foreach (var h in HotAreas)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                            <MudAvatar Color="Color.Tertiary" Size="Size.Small" Style="background: var(--mud-palette-background-gray); color: var(--mud-palette-text-primary); font-weight: 700;">@h.Rank</MudAvatar>
+                            <MudStack Spacing="0" Style="flex: 1;">
+                                <MudText Typo="Typo.body2" Style="font-weight: 600;">@h.Name</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">@h.City</MudText>
+                            </MudStack>
+                            <MudStack Spacing="0" AlignItems="AlignItems.End">
+                                <MudText Typo="Typo.body2" Style="font-weight: 600;">@h.PricePerSqm €/m²</MudText>
+                                <MudText Typo="Typo.caption" Style="color: var(--mud-palette-success); font-weight: 600;">+@h.Growth %</MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    private record HotArea(int Rank, string Name, string City, string PricePerSqm, string Growth);
+
+    private static readonly HotArea[] HotAreas =
+    {
+        new(1, "Friedrichshain",   "Berlin",    "16,80",  "8,2"),
+        new(2, "Schwabing",         "München",   "22,40",  "6,9"),
+        new(3, "Eppendorf",         "Hamburg",   "19,10",  "5,4"),
+        new(4, "Belgisches Viertel","Köln",      "15,90",  "4,8"),
+        new(5, "Medienhafen",       "Düsseldorf","17,50",  "4,1"),
+    };
+}

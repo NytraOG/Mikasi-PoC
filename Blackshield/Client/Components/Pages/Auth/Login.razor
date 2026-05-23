@@ -1,0 +1,147 @@
+@page "/auth/login"
+@layout EmptyLayout
+
+<PageTitle>Anmelden · Blackshield</PageTitle>
+
+<div class="auth-shell">
+
+    <div class="auth-hero blackshield-auth-hero">
+        <div class="auth-hero-inner">
+            <div class="auth-brand">
+                <div class="auth-brand-mark">
+                    <MudIcon Icon="@Icons.Material.Filled.Shield" Size="Size.Medium" Style="color:white;"/>
+                </div>
+                <MudText Typo="Typo.h5" Class="blackshield-brand" Style="color: white;">Blackshield</MudText>
+            </div>
+
+            <MudStack Spacing="4" Class="auth-hero-content">
+                <MudText Typo="Typo.h3" Style="color: white; font-weight: 700; line-height: 1.15;">
+                    Vermietung,<br/>komplett digital.
+                </MudText>
+                <MudText Typo="Typo.body1" Style="color: rgba(255,255,255,0.75); max-width: 440px;">
+                    Von der Objektanlage über die Selbstauskunft bis zur Mietvertragsunterzeichnung —
+                    in einem einzigen, schlanken Workflow.
+                </MudText>
+
+                <MudStack Spacing="3" Class="mt-4">
+                    @foreach (var f in HeroFeatures)
+                    {
+                        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Start">
+                            <div class="auth-feature-check">
+                                <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Style="color: #34D399;"/>
+                            </div>
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.subtitle2" Style="color: white; font-weight: 600;">@f.Title</MudText>
+                                <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.6);">@f.Description</MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudStack>
+
+            <div class="auth-hero-quote">
+                <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.85); font-style: italic;">
+                    „Wir vermieten 28 Wohnungen über Blackshield. Selbstauskünfte landen sortiert im Postfach —
+                    wir schaffen es jetzt in der Hälfte der Zeit."
+                </MudText>
+                <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="mt-3">
+                    <MudAvatar Size="Size.Small" Color="Color.Secondary">JH</MudAvatar>
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.caption" Style="color: white; font-weight: 600;">Julia Hoffmann</MudText>
+                        <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.55); font-size: 0.7rem;">Geschäftsführung, Hoffmann Immobilien</MudText>
+                    </MudStack>
+                </MudStack>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-form-side">
+        <div class="auth-form-inner">
+
+            <MudStack Spacing="6">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h4" Class="blackshield-page-title">Willkommen zurück</MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Tertiary">Melde dich an, um auf dein Blackshield-Konto zuzugreifen.</MudText>
+                </MudStack>
+
+                <MudStack Spacing="3">
+                    <MudButton FullWidth="true"
+                               Size="Size.Large"
+                               Variant="Variant.Outlined"
+                               Color="Color.Default"
+                               StartIcon="@Icons.Custom.Brands.Google"
+                               Class="auth-oauth-btn">
+                        Mit Google fortfahren
+                    </MudButton>
+                    <MudButton FullWidth="true"
+                               Size="Size.Large"
+                               Variant="Variant.Outlined"
+                               Color="Color.Default"
+                               StartIcon="@Icons.Custom.Brands.Apple"
+                               Class="auth-oauth-btn">
+                        Mit Apple fortfahren
+                    </MudButton>
+                </MudStack>
+
+                <div class="auth-divider">
+                    <span>oder mit E-Mail</span>
+                </div>
+
+                <MudStack Spacing="3">
+                    <MudTextField T="string"
+                                  Label="E-Mail-Adresse"
+                                  Placeholder="@("anna@beispiel.de")"
+                                  Variant="Variant.Outlined"
+                                  Adornment="Adornment.Start"
+                                  AdornmentIcon="@Icons.Material.Outlined.MailOutline"
+                                  InputType="InputType.Email"/>
+                    <MudButton FullWidth="true"
+                               Size="Size.Large"
+                               Variant="Variant.Filled"
+                               Color="Color.Primary"
+                               EndIcon="@Icons.Material.Filled.ArrowForward">
+                        Magic-Link senden
+                    </MudButton>
+                </MudStack>
+
+                <MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">
+                    Mit der Anmeldung akzeptierst du die
+                    <MudLink Href="#" Underline="Underline.Always" Color="Color.Tertiary">Nutzungsbedingungen</MudLink>
+                    und die
+                    <MudLink Href="#" Underline="Underline.Always" Color="Color.Tertiary">Datenschutzerklärung</MudLink>.
+                </MudText>
+
+                <MudDivider/>
+
+                <MudStack Row="true" Spacing="1" Justify="Justify.Center">
+                    <MudText Typo="Typo.body2" Color="Color.Tertiary">Noch kein Konto?</MudText>
+                    <MudLink Href="/auth/registrieren" Color="Color.Primary" Underline="Underline.None" Typo="Typo.body2" Style="font-weight: 600;">
+                        Jetzt 14 Tage kostenlos testen
+                    </MudLink>
+                </MudStack>
+            </MudStack>
+
+            <div class="auth-footer">
+                <MudStack Row="true" Spacing="3" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.caption" Color="Color.Tertiary">© 2026 Blackshield UG</MudText>
+                    <span class="auth-footer-dot">·</span>
+                    <MudLink Href="#" Typo="Typo.caption" Underline="Underline.None" Color="Color.Tertiary">Impressum</MudLink>
+                    <span class="auth-footer-dot">·</span>
+                    <MudLink Href="#" Typo="Typo.caption" Underline="Underline.None" Color="Color.Tertiary">Hilfe</MudLink>
+                </MudStack>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private record HeroFeature(string Title, string Description);
+
+    private static readonly HeroFeature[] HeroFeatures =
+    {
+        new("Digitale Selbstauskunft",  "Personalisierte Links, DSGVO-konform, keine Registrierung für Interessenten."),
+        new("Smarte Termin-Pipeline",   "Besichtigungen, Erinnerungen und Status auf einen Blick."),
+        new("Automatische Marktdaten",  "Sieh in Echtzeit, wie deine Mieten im lokalen Markt einzuordnen sind."),
+        new("E-Signatur inklusive",     "Vom Vertrag zum digital unterschriebenen PDF – ohne Medienbruch."),
+    };
+}

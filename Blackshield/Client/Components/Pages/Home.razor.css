@@ -1,0 +1,25 @@
+.stat-icon {
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.placeholder-chart {
+    height: 220px;
+    border-radius: 12px;
+    background: repeating-linear-gradient(
+        135deg,
+        var(--mud-palette-background-gray),
+        var(--mud-palette-background-gray) 10px,
+        rgba(0, 0, 0, 0.02) 10px,
+        rgba(0, 0, 0, 0.02) 20px
+    );
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    color: var(--mud-palette-text-secondary);
+}

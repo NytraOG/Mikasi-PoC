@@ -1,0 +1,84 @@
+@page "/termine"
+
+<PageTitle>Termine · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Termine</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">Kalenderwoche 21 · 9 Besichtigungen geplant</MudText>
+        </MudStack>
+        <MudStack Row="true" Spacing="2">
+            <MudButtonGroup OverrideStyles="false">
+                <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.ChevronLeft"/>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default">Heute</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default" StartIcon="@Icons.Material.Filled.ChevronRight"/>
+            </MudButtonGroup>
+            <MudButtonGroup OverrideStyles="false">
+                <MudButton Variant="Variant.Outlined" Color="Color.Default">Tag</MudButton>
+                <MudButton Variant="Variant.Filled" Color="Color.Primary">Woche</MudButton>
+                <MudButton Variant="Variant.Outlined" Color="Color.Default">Monat</MudButton>
+            </MudButtonGroup>
+            <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary">Neuer Termin</MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px; overflow: hidden;">
+        <div class="calendar-grid">
+            @foreach (var day in WeekDays)
+            {
+                <div class="calendar-col">
+                    <div class="calendar-col-header @(day.IsToday ? "today" : "")">
+                        <div class="day-name">@day.Name</div>
+                        <div class="day-number">@day.Number</div>
+                    </div>
+                    <div class="calendar-col-body">
+                        @foreach (var ev in day.Events)
+                        {
+                            <div class="calendar-event @ev.Variant">
+                                <div class="event-time">@ev.Time</div>
+                                <div class="event-title">@ev.Title</div>
+                                <div class="event-location">@ev.Location</div>
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        </div>
+    </MudPaper>
+</MudStack>
+
+@code {
+    private record CalendarEvent(string Time, string Title, string Location, string Variant);
+    private record DayColumn(string Name, string Number, bool IsToday, CalendarEvent[] Events);
+
+    private static readonly DayColumn[] WeekDays =
+    {
+        new("Mo", "18", false, new CalendarEvent[]
+        {
+            new("10:30", "Besichtigung · Sonnenallee", "Berlin-Neukölln · L. Weber", "primary"),
+        }),
+        new("Di", "19", false, new CalendarEvent[]
+        {
+            new("09:00", "Erst-Besichtigung",  "München · J. Becker",  "primary"),
+            new("14:30", "Vertragsgespräch",   "Hamburg · Fam. Schulz","secondary"),
+        }),
+        new("Mi", "20", true, new CalendarEvent[]
+        {
+            new("11:00", "Besichtigung · Bismarckstr.","Hamburg · 3 Interess.","primary"),
+            new("15:00", "Schlüsselübergabe",          "Köln · L. Hoffmann",   "success"),
+            new("18:30", "Besichtigung · Hegestr.",    "Hamburg · 2 Interess.","primary"),
+        }),
+        new("Do", "21", false, new CalendarEvent[]
+        {
+            new("10:00", "Wohnungsabnahme",            "Berlin · Ex-Mieter",   "warning"),
+        }),
+        new("Fr", "22", false, new CalendarEvent[]
+        {
+            new("09:30", "Besichtigung",               "Leipzig · M. Voigt",   "primary"),
+            new("16:00", "Selbstauskunft prüfen",      "Online · S. König",    "secondary"),
+        }),
+        new("Sa", "23", false, new CalendarEvent[] { }),
+        new("So", "24", false, new CalendarEvent[] { }),
+    };
+}

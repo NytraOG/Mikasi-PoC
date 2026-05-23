@@ -1,0 +1,172 @@
+@page "/abo"
+
+<PageTitle>Abo &amp; Abrechnung · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+    <MudStack Spacing="1">
+        <MudText Typo="Typo.h4" Class="blackshield-page-title">Abo &amp; Abrechnung</MudText>
+        <MudText Typo="Typo.body1" Color="Color.Tertiary">Verwalte deinen Plan, Rechnungen und Zahlungsmethoden.</MudText>
+    </MudStack>
+
+    <MudPaper Elevation="0" Class="pa-6" Style="border-radius: 16px; background: linear-gradient(135deg, #0F172A 0%, #312E81 100%); color: white; position: relative; overflow: hidden;">
+        <MudGrid Style="align-items: center;">
+            <MudItem xs="12" md="8">
+                <MudStack Spacing="2">
+                    <MudChip T="string" Color="Color.Secondary" Variant="Variant.Filled" Size="Size.Small" Style="width: fit-content;">Aktueller Plan</MudChip>
+                    <MudText Typo="Typo.h3" Style="color: white; font-weight: 800;">Pro</MudText>
+                    <MudText Typo="Typo.body1" Style="color: rgba(255,255,255,0.75);">
+                        Bis zu 25 aktive Objekte · unbegrenzte Interessenten · digitale Selbstauskunft · E-Signaturen
+                    </MudText>
+                    <MudStack Row="true" Spacing="4" Class="mt-3 flex-wrap">
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.55);">Monatlich</MudText>
+                            <MudText Typo="Typo.h5" Style="color: white; font-weight: 700;">79 € / Monat</MudText>
+                        </MudStack>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.55);">Nächste Abrechnung</MudText>
+                            <MudText Typo="Typo.h5" Style="color: white; font-weight: 700;">14.06.2026</MudText>
+                        </MudStack>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.55);">Status</MudText>
+                            <MudChip T="string" Color="Color.Success" Variant="Variant.Filled" Size="Size.Small" Style="width: fit-content;">Aktiv</MudChip>
+                        </MudStack>
+                    </MudStack>
+                </MudStack>
+            </MudItem>
+            <MudItem xs="12" md="4">
+                <MudStack Spacing="2" AlignItems="AlignItems.End">
+                    <MudButton Variant="Variant.Filled" Color="Color.Secondary" Size="Size.Large" StartIcon="@Icons.Material.Filled.Bolt">
+                        Auf Pro+ upgraden
+                    </MudButton>
+                    <MudButton Variant="Variant.Text" Style="color: rgba(255,255,255,0.85);" Size="Size.Small">
+                        Plan wechseln / kündigen
+                    </MudButton>
+                </MudStack>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    <MudGrid Spacing="4">
+        @foreach (var plan in Plans)
+        {
+            <MudItem xs="12" md="4">
+                <MudPaper Elevation="0" Outlined="!plan.Highlighted" Class="@($"pa-5 plan-card {(plan.Highlighted ? "highlighted" : "")}")" Style="border-radius: 16px; height: 100%;">
+                    <MudStack Spacing="3" Style="height: 100%;">
+                        <MudStack Spacing="1">
+                            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                <MudText Typo="Typo.h6" Style="font-weight: 700;">@plan.Name</MudText>
+                                @if (plan.Highlighted)
+                                {
+                                    <MudChip T="string" Color="Color.Primary" Size="Size.Small" Variant="Variant.Filled">Empfohlen</MudChip>
+                                }
+                            </MudStack>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@plan.Tagline</MudText>
+                        </MudStack>
+                        <MudStack Row="true" AlignItems="AlignItems.Baseline" Spacing="1">
+                            <MudText Typo="Typo.h3" Style="font-weight: 800;">@plan.Price €</MudText>
+                            <MudText Typo="Typo.body2" Color="Color.Tertiary">/ Monat</MudText>
+                        </MudStack>
+                        <MudDivider/>
+                        <MudStack Spacing="2" Style="flex: 1;">
+                            @foreach (var f in plan.Features)
+                            {
+                                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@Icons.Material.Filled.Check" Color="Color.Success" Size="Size.Small"/>
+                                    <MudText Typo="Typo.body2">@f</MudText>
+                                </MudStack>
+                            }
+                        </MudStack>
+                        <MudButton Variant="@(plan.IsCurrent ? Variant.Outlined : Variant.Filled)"
+                                   Color="@(plan.IsCurrent ? Color.Default : Color.Primary)"
+                                   FullWidth="true"
+                                   Disabled="@plan.IsCurrent">
+                            @(plan.IsCurrent ? "Aktueller Plan" : plan.Cta)
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center" Class="mb-3">
+                    <MudText Typo="Typo.h6">Zahlungsmethode</MudText>
+                    <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Text" Color="Color.Primary" Size="Size.Small">Hinzufügen</MudButton>
+                </MudStack>
+                <MudPaper Outlined="true" Class="pa-3" Style="border-radius: 10px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                        <MudIcon Icon="@Icons.Material.Filled.CreditCard" Color="Color.Primary"/>
+                        <MudStack Spacing="0" Style="flex: 1;">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">Visa · endet auf 4242</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">gültig bis 08/2028</MudText>
+                        </MudStack>
+                        <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Text">Aktiv</MudChip>
+                    </MudStack>
+                </MudPaper>
+            </MudPaper>
+        </MudItem>
+        <MudItem xs="12" md="6">
+            <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                <MudText Typo="Typo.h6" Class="mb-3">Letzte Rechnungen</MudText>
+                <MudStack Spacing="2">
+                    @foreach (var i in Invoices)
+                    {
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="3">
+                            <MudIcon Icon="@Icons.Material.Filled.Receipt" Color="Color.Tertiary"/>
+                            <MudStack Spacing="0" Style="flex: 1;">
+                                <MudText Typo="Typo.body2" Style="font-weight: 600;">@i.Number</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">@i.Date</MudText>
+                            </MudStack>
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">@i.Amount</MudText>
+                            <MudIconButton Icon="@Icons.Material.Filled.Download" Size="Size.Small"/>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudPaper>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    private record Plan(string Name, string Tagline, int Price, string[] Features, bool Highlighted, bool IsCurrent, string Cta);
+
+    private static readonly Plan[] Plans =
+    {
+        new("Starter", "Für Einzelvermieter", 19, new[]
+        {
+            "Bis zu 3 aktive Objekte",
+            "Selbstauskunft per Link",
+            "10 GB Speicher",
+            "E-Mail-Support"
+        }, false, false, "Wechseln"),
+        new("Pro", "Beliebteste Wahl", 79, new[]
+        {
+            "Bis zu 25 aktive Objekte",
+            "Unbegrenzte Interessenten",
+            "Digitale Selbstauskunft",
+            "E-Signaturen",
+            "Prioritäts-Support"
+        }, true, true, "Aktueller Plan"),
+        new("Pro+ White Label", "Für Hausverwaltungen", 199, new[]
+        {
+            "Unbegrenzte Objekte",
+            "Eigenes Branding",
+            "Eigene Subdomain",
+            "Team-Zugänge",
+            "API-Zugang",
+            "Persönlicher Account-Manager"
+        }, false, false, "Vertrieb kontaktieren"),
+    };
+
+    private record Invoice(string Number, string Date, string Amount);
+
+    private static readonly Invoice[] Invoices =
+    {
+        new("BSI-2026-0051", "14.05.2026", "79,00 €"),
+        new("BSI-2026-0042", "14.04.2026", "79,00 €"),
+        new("BSI-2026-0033", "14.03.2026", "79,00 €"),
+        new("BSI-2026-0024", "14.02.2026", "79,00 €"),
+    };
+}

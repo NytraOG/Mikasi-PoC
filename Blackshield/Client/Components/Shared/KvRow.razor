@@ -1,0 +1,14 @@
+@namespace Blackshield.Components.Shared
+
+<MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Center">
+    <MudText Typo="Typo.body2" Color="Color.Tertiary">@Label</MudText>
+    <MudText Typo="Typo.body2" Style="@($"font-weight: {(Highlight ? 700 : 500)}; color: {(Highlight ? "var(--mud-palette-primary)" : "inherit")};")">
+        @Value
+    </MudText>
+</MudStack>
+
+@code {
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+    [Parameter] public bool Highlight { get; set; }
+}

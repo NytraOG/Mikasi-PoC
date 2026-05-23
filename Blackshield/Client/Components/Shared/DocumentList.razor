@@ -1,0 +1,39 @@
+@namespace Blackshield.Components.Shared
+
+<MudTable Items="Documents" Hover="true" Elevation="0">
+    <HeaderContent>
+        <MudTh>Dokument</MudTh>
+        <MudTh>Objekt</MudTh>
+        <MudTh>Interessent</MudTh>
+        <MudTh>Eingereicht</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate Context="row">
+        <MudTd DataLabel="Dokument">
+            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                <MudIcon Icon="@Icons.Material.Filled.PictureAsPdf" Color="Color.Error"/>
+                <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Name</MudText>
+            </MudStack>
+        </MudTd>
+        <MudTd DataLabel="Objekt">@row.Property</MudTd>
+        <MudTd DataLabel="Interessent">@row.Prospect</MudTd>
+        <MudTd DataLabel="Eingereicht">@row.Date</MudTd>
+        <MudTd DataLabel="Status">
+            <MudChip T="string" Size="Size.Small" Color="@row.StatusColor" Variant="Variant.Text">@row.Status</MudChip>
+        </MudTd>
+        <MudTd>
+            <MudStack Row="true" Spacing="1">
+                <MudIconButton Icon="@Icons.Material.Filled.Visibility" Size="Size.Small"/>
+                <MudIconButton Icon="@Icons.Material.Filled.Download" Size="Size.Small"/>
+                <MudIconButton Icon="@Icons.Material.Filled.MoreVert" Size="Size.Small"/>
+            </MudStack>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    [Parameter] public DocumentRow[] Documents { get; set; } = Array.Empty<DocumentRow>();
+
+    public record DocumentRow(string Name, string Property, string Prospect, string Date, string Status, Color StatusColor);
+}

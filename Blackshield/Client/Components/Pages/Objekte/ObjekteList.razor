@@ -1,0 +1,205 @@
+@page "/objekte"
+
+<PageTitle>Objekte · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+
+    <MudStack Row="true" AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Objekte</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">12 aktive · 3 in Vorbereitung · 5 archiviert</MudText>
+        </MudStack>
+        <MudStack Row="true" Spacing="2">
+            <MudButton StartIcon="@Icons.Material.Outlined.Download"
+                       Variant="Variant.Outlined"
+                       Color="Color.Default">
+                Export
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Add"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Href="/objekte/neu">
+                Neues Objekt
+            </MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudPaper Elevation="0" Outlined="true" Class="pa-4" Style="border-radius: 16px;">
+        <MudGrid Spacing="3" Justify="Justify.FlexStart">
+            <MudItem xs="12" md="5">
+                <MudTextField T="string"
+                              Placeholder="Adresse, Bezeichnung, PLZ…"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"/>
+            </MudItem>
+            <MudItem xs="6" md="2">
+                <MudSelect T="string" Placeholder="Status" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    <MudSelectItem Value="@("Alle")">Alle</MudSelectItem>
+                    <MudSelectItem Value="@("Aktiv")">Aktiv</MudSelectItem>
+                    <MudSelectItem Value="@("Vorbereitung")">In Vorbereitung</MudSelectItem>
+                    <MudSelectItem Value="@("Archiviert")">Archiviert</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6" md="2">
+                <MudSelect T="string" Placeholder="Stadt" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    <MudSelectItem Value="@("Alle")">Alle Städte</MudSelectItem>
+                    <MudSelectItem Value="@("Berlin")">Berlin</MudSelectItem>
+                    <MudSelectItem Value="@("Hamburg")">Hamburg</MudSelectItem>
+                    <MudSelectItem Value="@("Köln")">Köln</MudSelectItem>
+                    <MudSelectItem Value="@("München")">München</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6" md="2">
+                <MudSelect T="string" Placeholder="Zimmer" Variant="Variant.Outlined" Margin="Margin.Dense">
+                    <MudSelectItem Value="@("Egal")">Egal</MudSelectItem>
+                    <MudSelectItem Value="@("1")">1 Zimmer</MudSelectItem>
+                    <MudSelectItem Value="@("2")">2 Zimmer</MudSelectItem>
+                    <MudSelectItem Value="@("3")">3+ Zimmer</MudSelectItem>
+                </MudSelect>
+            </MudItem>
+            <MudItem xs="6" md="1" Class="d-flex align-center">
+                <MudToggleIconButton Toggled="@_gridView"
+                                     ToggledChanged="@(v => _gridView = v)"
+                                     Icon="@Icons.Material.Filled.GridView"
+                                     ToggledIcon="@Icons.Material.Filled.ViewList"
+                                     Color="Color.Default"
+                                     ToggledColor="Color.Primary"/>
+            </MudItem>
+        </MudGrid>
+    </MudPaper>
+
+    @if (_gridView)
+    {
+        <MudGrid Spacing="4">
+            @foreach (var p in Properties)
+            {
+                <MudItem xs="12" sm="6" md="4" lg="3">
+                    <MudPaper Elevation="1" Class="blackshield-property-card" Style="border-radius: 16px; cursor: pointer;" @onclick="@(() => GoToDetail(p.Id))">
+                        <div class="property-image" style="@($"background-image: linear-gradient(135deg, {p.AccentColor} 0%, {p.AccentColor2} 100%);")">
+                            <MudChip T="string"
+                                     Class="status-chip"
+                                     Size="Size.Small"
+                                     Color="@p.StatusColor"
+                                     Variant="Variant.Filled">
+                                @p.Status
+                            </MudChip>
+                            <div style="position: absolute; bottom: 12px; right: 12px;">
+                                <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz"
+                                               Color="Color.Inherit"
+                                               Style="background: rgba(255,255,255,0.85); color: #0F172A;"
+                                               Size="Size.Small"/>
+                            </div>
+                        </div>
+                        <div class="pa-4">
+                            <MudStack Spacing="1">
+                                <MudText Typo="Typo.subtitle1" Style="font-weight: 600;">@p.Title</MudText>
+                                <MudText Typo="Typo.caption" Color="Color.Tertiary">@p.Address</MudText>
+                            </MudStack>
+
+                            <MudStack Row="true" Spacing="3" Class="mt-3 mb-3">
+                                <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@Icons.Material.Outlined.SquareFoot" Size="Size.Small" Color="Color.Tertiary"/>
+                                    <MudText Typo="Typo.caption">@p.Area m²</MudText>
+                                </MudStack>
+                                <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Bed" Size="Size.Small" Color="Color.Tertiary"/>
+                                    <MudText Typo="Typo.caption">@p.Rooms Zi.</MudText>
+                                </MudStack>
+                                <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                    <MudIcon Icon="@Icons.Material.Outlined.Stairs" Size="Size.Small" Color="Color.Tertiary"/>
+                                    <MudText Typo="Typo.caption">@p.Floor.</MudText>
+                                </MudStack>
+                            </MudStack>
+
+                            <MudDivider Class="my-2"/>
+
+                            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                <MudStack Spacing="0">
+                                    <MudText Typo="Typo.h6" Style="font-weight: 700; line-height: 1;">@p.Price € <span style="font-size: 0.75rem; font-weight: 400; color: var(--mud-palette-text-secondary);">/Mt.</span></MudText>
+                                    <MudText Typo="Typo.caption" Color="Color.Tertiary">Kaltmiete</MudText>
+                                </MudStack>
+                                <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                                    <MudBadge Content="@p.Prospects" Color="Color.Primary" Origin="Origin.TopRight" Overlap="true">
+                                        <MudIcon Icon="@Icons.Material.Outlined.People" Color="Color.Tertiary"/>
+                                    </MudBadge>
+                                </MudStack>
+                            </MudStack>
+                        </div>
+                    </MudPaper>
+                </MudItem>
+            }
+        </MudGrid>
+    }
+    else
+    {
+        <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px; overflow: hidden;">
+            <MudTable Items="Properties" Hover="true" Dense="false" Bordered="false" Striped="false" Elevation="0">
+                <HeaderContent>
+                    <MudTh>Bezeichnung</MudTh>
+                    <MudTh>Adresse</MudTh>
+                    <MudTh>Zimmer / Fläche</MudTh>
+                    <MudTh>Miete</MudTh>
+                    <MudTh>Interessenten</MudTh>
+                    <MudTh>Status</MudTh>
+                    <MudTh></MudTh>
+                </HeaderContent>
+                <RowTemplate Context="row">
+                    <MudTd DataLabel="Bezeichnung">
+                        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+                            <div class="property-thumb" style="@($"background: linear-gradient(135deg, {row.AccentColor}, {row.AccentColor2});")"></div>
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Title</MudText>
+                        </MudStack>
+                    </MudTd>
+                    <MudTd DataLabel="Adresse">@row.Address</MudTd>
+                    <MudTd DataLabel="Zimmer / Fläche">@row.Rooms Zi. · @row.Area m²</MudTd>
+                    <MudTd DataLabel="Miete">@row.Price €</MudTd>
+                    <MudTd DataLabel="Interessenten">
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Text" Color="Color.Primary">@row.Prospects</MudChip>
+                    </MudTd>
+                    <MudTd DataLabel="Status">
+                        <MudChip T="string" Size="Size.Small" Color="@row.StatusColor" Variant="Variant.Filled">@row.Status</MudChip>
+                    </MudTd>
+                    <MudTd>
+                        <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Color="Color.Default" OnClick="@(() => GoToDetail(row.Id))"/>
+                    </MudTd>
+                </RowTemplate>
+            </MudTable>
+        </MudPaper>
+    }
+</MudStack>
+
+@inject NavigationManager Nav
+
+@code {
+    private bool _gridView = true;
+
+    private void GoToDetail(string id) => Nav.NavigateTo($"/objekte/{id}");
+
+    private record Property(
+        string Id,
+        string Title,
+        string Address,
+        int Rooms,
+        int Area,
+        int Floor,
+        int Price,
+        int Prospects,
+        string Status,
+        Color StatusColor,
+        string AccentColor,
+        string AccentColor2);
+
+    private static readonly Property[] Properties =
+    {
+        new("p1",  "3-Zimmer Altbau · Neukölln",    "Sonnenallee 142, 12059 Berlin",     3, 78,  3, 1320, 14, "Aktiv",         Color.Success, "#6366F1", "#A855F7"),
+        new("p2",  "2-Zimmer Innenhof · Belgisches Viertel", "Hohenzollernring 8, 50672 Köln", 2, 56,  2,  890, 22, "Aktiv",         Color.Success, "#0EA5E9", "#22D3EE"),
+        new("p3",  "4-Zi Familienwohnung · Altona", "Bismarckstraße 22, 22765 Hamburg",  4, 112, 4, 2150,  6, "Vertrag",       Color.Info,    "#F59E0B", "#FB923C"),
+        new("p4",  "1-Zi Apartment · Schwabing",    "Goethestraße 5, 80336 München",     1, 32,  1, 1050,  8, "Aktiv",         Color.Success, "#10B981", "#34D399"),
+        new("p5",  "3-Zi Stadthaus · Südvorstadt",  "Lessingplatz 4, 04275 Leipzig",     3, 84,  1,  980,  4, "Vorbereitung",  Color.Warning, "#EC4899", "#F472B6"),
+        new("p6",  "2-Zi Gartenwohnung · Eppendorf","Hegestraße 17, 20251 Hamburg",      2, 64,  0, 1480,  0, "Entwurf",       Color.Default, "#64748B", "#94A3B8"),
+        new("p7",  "3-Zi Neubau · Friedrichshain",  "Boxhagener Str. 91, 10245 Berlin",  3, 88,  5, 1680,  31, "Aktiv",        Color.Success, "#8B5CF6", "#A78BFA"),
+        new("p8",  "Loft · Medienhafen",            "Speditionstr. 12, 40221 Düsseldorf",2, 96,  6, 1890,  9, "Aktiv",         Color.Success, "#0F766E", "#14B8A6"),
+    };
+}

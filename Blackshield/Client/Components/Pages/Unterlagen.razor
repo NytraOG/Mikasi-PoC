@@ -1,0 +1,77 @@
+@page "/unterlagen"
+
+<PageTitle>Unterlagen · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Unterlagen</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">Zentrale Übersicht aller Dokumente von Interessenten und Objekten.</MudText>
+        </MudStack>
+        <MudButton StartIcon="@Icons.Material.Filled.UploadFile" Variant="Variant.Filled" Color="Color.Primary">
+            Anfordern
+        </MudButton>
+    </MudStack>
+
+    <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px;">
+        <MudTabs Border="false" Elevation="0" Class="pt-2 px-3" SliderColor="Color.Primary">
+            <MudTabPanel Text="Selbstauskünfte" Icon="@Icons.Material.Outlined.AssignmentInd" BadgeData="14" BadgeColor="Color.Primary">
+                <div class="pa-5">
+                    <DocumentList Documents="@SelfDisclosures"/>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Einkommensnachweise" Icon="@Icons.Material.Outlined.Receipt" BadgeData="9" BadgeColor="Color.Info">
+                <div class="pa-5">
+                    <DocumentList Documents="@IncomeProofs"/>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Schufa-Auskünfte" Icon="@Icons.Material.Outlined.VerifiedUser" BadgeData="7" BadgeColor="Color.Success">
+                <div class="pa-5">
+                    <DocumentList Documents="@SchufaDocs"/>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Mietverträge" Icon="@Icons.Material.Outlined.Gavel">
+                <div class="pa-5">
+                    <DocumentList Documents="@Contracts"/>
+                </div>
+            </MudTabPanel>
+            <MudTabPanel Text="Objekt-Dokumente" Icon="@Icons.Material.Outlined.Apartment">
+                <div class="pa-5">
+                    <DocumentList Documents="@ObjectDocs"/>
+                </div>
+            </MudTabPanel>
+        </MudTabs>
+    </MudPaper>
+</MudStack>
+
+@code {
+    private static readonly DocumentList.DocumentRow[] SelfDisclosures =
+    {
+        new("Selbstauskunft_Lukas_Weber.pdf",    "Sonnenallee 142",     "L. Weber",          "16.05.2026", "Eingereicht",  Color.Success),
+        new("Selbstauskunft_Sarah_König.pdf",    "Hohenzollernring 8",  "S. König",          "15.05.2026", "Eingereicht",  Color.Success),
+        new("Selbstauskunft_Familie_Schulz.pdf", "Bismarckstraße 22",   "Fam. Schulz",       "10.05.2026", "Eingereicht",  Color.Success),
+        new("—",                                 "Goethestraße 5",      "J. Becker",         "—",          "Offen",        Color.Warning),
+    };
+
+    private static readonly DocumentList.DocumentRow[] IncomeProofs =
+    {
+        new("Gehaltsnachweis_Weber_April.pdf",   "Sonnenallee 142",     "L. Weber",          "16.05.2026", "Geprüft",      Color.Success),
+        new("Gehaltsnachweis_König_Q1.pdf",      "Hohenzollernring 8",  "S. König",          "15.05.2026", "In Prüfung",   Color.Info),
+    };
+
+    private static readonly DocumentList.DocumentRow[] SchufaDocs =
+    {
+        new("Schufa-Auskunft_Weber.pdf",         "Sonnenallee 142",     "L. Weber",          "16.05.2026", "Geprüft",      Color.Success),
+    };
+
+    private static readonly DocumentList.DocumentRow[] Contracts =
+    {
+        new("Mietvertrag_Schulz_Bismarck.pdf",   "Bismarckstraße 22",   "Fam. Schulz",       "20.05.2026", "Unterzeichnet",Color.Success),
+    };
+
+    private static readonly DocumentList.DocumentRow[] ObjectDocs =
+    {
+        new("Energieausweis_Sonnenallee.pdf",    "Sonnenallee 142",     "—",                 "09.05.2026", "Hochgeladen",  Color.Default),
+        new("Grundriss_Bismarck.pdf",            "Bismarckstraße 22",   "—",                 "01.05.2026", "Hochgeladen",  Color.Default),
+    };
+}

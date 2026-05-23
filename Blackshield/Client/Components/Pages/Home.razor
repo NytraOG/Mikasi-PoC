@@ -1,7 +1,212 @@
-﻿@page "/"
+@page "/"
 
-<PageTitle>Home</PageTitle>
+<PageTitle>Dashboard · Blackshield</PageTitle>
 
-<h1>Hello, world!</h1>
+<MudStack Spacing="6">
 
-Welcome to your new app.
+    <MudStack Row="true" AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="flex-wrap" StretchItems="StretchItems.None">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Guten Morgen, Anna</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">Hier ist ein Überblick deiner laufenden Vermietungen.</MudText>
+        </MudStack>
+        <MudStack Row="true" Spacing="2">
+            <MudButton StartIcon="@Icons.Material.Filled.FilterList"
+                       Variant="Variant.Outlined"
+                       Color="Color.Default">
+                Filter
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Add"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary"
+                       Href="/objekte/neu">
+                Neues Objekt
+            </MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="4">
+        @foreach (var stat in Stats)
+        {
+            <MudItem xs="12" sm="6" md="3">
+                <MudPaper Elevation="0" Class="blackshield-stat-card pa-5" Outlined="true">
+                    <MudStack Spacing="3">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                            <div class="stat-icon" style="@($"background:{stat.IconBg};")">
+                                <MudIcon Icon="@stat.Icon" Style="@($"color:{stat.IconColor};")"/>
+                            </div>
+                            <MudChip T="string"
+                                     Size="Size.Small"
+                                     Variant="Variant.Text"
+                                     Color="@(stat.TrendPositive ? Color.Success : Color.Error)">
+                                @(stat.TrendPositive ? "▲" : "▼") @stat.Trend
+                            </MudChip>
+                        </MudStack>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary" Style="text-transform: uppercase; letter-spacing: 0.08em; font-weight: 600;">
+                                @stat.Label
+                            </MudText>
+                            <MudText Typo="Typo.h3" Style="font-weight: 700; line-height: 1.1;">@stat.Value</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@stat.SubLabel</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="8">
+            <MudPaper Elevation="0" Outlined="true" Class="pa-0" Style="border-radius: 16px; overflow: hidden;">
+                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="pa-5">
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.h6">Aktivität</MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Tertiary">Letzte 7 Tage</MudText>
+                    </MudStack>
+                    <MudTabs Rounded="true" Border="false" Elevation="0" SliderColor="Color.Primary" Style="min-height: unset;">
+                        <MudTabPanel Text="Anfragen"/>
+                        <MudTabPanel Text="Besichtigungen"/>
+                        <MudTabPanel Text="Verträge"/>
+                    </MudTabs>
+                </MudStack>
+
+                <MudDivider/>
+
+                <div class="pa-5">
+                    <div class="placeholder-chart">
+                        <MudIcon Icon="@Icons.Material.Filled.BarChart" Size="Size.Large" Color="Color.Tertiary"/>
+                        <MudText Typo="Typo.body2" Color="Color.Tertiary" Class="mt-2">
+                            Chart-Bereich · hier wird ein Aktivitäts-Diagramm angezeigt
+                        </MudText>
+                    </div>
+                </div>
+
+                <MudDivider/>
+
+                <MudList T="string" Class="pa-2">
+                    @foreach (var activity in Activities)
+                    {
+                        <MudListItem T="string" Class="py-3">
+                            <AvatarContent>
+                                <MudAvatar Color="@activity.Color" Variant="Variant.Filled" Size="Size.Small">
+                                    <MudIcon Icon="@activity.Icon" Size="Size.Small"/>
+                                </MudAvatar>
+                            </AvatarContent>
+                            <ChildContent>
+                                <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween">
+                                    <MudStack Spacing="0">
+                                        <MudText Typo="Typo.body2">
+                                            <span style="font-weight: 600;">@activity.Title</span>
+                                            @activity.Details
+                                        </MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Tertiary">@activity.Property</MudText>
+                                    </MudStack>
+                                    <MudText Typo="Typo.caption" Color="Color.Tertiary">@activity.TimeAgo</MudText>
+                                </MudStack>
+                            </ChildContent>
+                        </MudListItem>
+                    }
+                </MudList>
+            </MudPaper>
+        </MudItem>
+
+        <MudItem xs="12" md="4">
+            <MudStack Spacing="4">
+                <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                    <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+                        <MudText Typo="Typo.h6">Heute</MudText>
+                        <MudLink Href="/termine" Typo="Typo.caption" Underline="Underline.None">Alle Termine →</MudLink>
+                    </MudStack>
+
+                    <MudStack Spacing="3">
+                        @foreach (var appt in TodaysAppointments)
+                        {
+                            <MudPaper Elevation="0" Class="pa-3" Style="background-color: var(--mud-palette-background-gray); border-radius: 10px;">
+                                <MudStack Row="true" AlignItems="AlignItems.Start" Spacing="3">
+                                    <MudStack Spacing="0" Style="min-width: 56px;" AlignItems="AlignItems.Center">
+                                        <MudText Typo="Typo.h6" Style="font-weight: 700; line-height: 1;">@appt.Time</MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Tertiary">@appt.Duration</MudText>
+                                    </MudStack>
+                                    <MudDivider Vertical="true" FlexItem="true"/>
+                                    <MudStack Spacing="0" Style="flex: 1;">
+                                        <MudText Typo="Typo.subtitle2" Style="font-weight: 600;">@appt.Title</MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Tertiary">@appt.Address</MudText>
+                                        <MudStack Row="true" Spacing="1" Class="mt-1">
+                                            @foreach (var name in appt.Attendees)
+                                            {
+                                                <MudChip T="string" Size="Size.Small" Variant="Variant.Outlined">@name</MudChip>
+                                            }
+                                        </MudStack>
+                                    </MudStack>
+                                </MudStack>
+                            </MudPaper>
+                        }
+                    </MudStack>
+                </MudPaper>
+
+                <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+                    <MudStack Spacing="3">
+                        <MudText Typo="Typo.h6">Schnellaktionen</MudText>
+                        <MudButton StartIcon="@Icons.Material.Outlined.PersonAdd"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   FullWidth="true"
+                                   Style="justify-content: flex-start;">
+                            Interessent einladen
+                        </MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.EventAvailable"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   FullWidth="true"
+                                   Style="justify-content: flex-start;">
+                            Besichtigung planen
+                        </MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.UploadFile"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   FullWidth="true"
+                                   Style="justify-content: flex-start;">
+                            Unterlagen anfordern
+                        </MudButton>
+                        <MudButton StartIcon="@Icons.Material.Outlined.AssignmentTurnedIn"
+                                   Variant="Variant.Outlined"
+                                   Color="Color.Default"
+                                   FullWidth="true"
+                                   Style="justify-content: flex-start;">
+                            Mietvertrag erstellen
+                        </MudButton>
+                    </MudStack>
+                </MudPaper>
+            </MudStack>
+        </MudItem>
+    </MudGrid>
+</MudStack>
+
+@code {
+    private record StatCard(string Label, string Value, string SubLabel, string Icon, string IconColor, string IconBg, string Trend, bool TrendPositive);
+    private record ActivityItem(string Title, string Details, string Property, string TimeAgo, string Icon, Color Color);
+    private record Appointment(string Time, string Duration, string Title, string Address, string[] Attendees);
+
+    private static readonly StatCard[] Stats =
+    {
+        new("Aktive Objekte", "12", "+2 diese Woche", Icons.Material.Outlined.Apartment, "#4F46E5", "rgba(79, 70, 229, 0.10)", "16,7 %", true),
+        new("Offene Anfragen", "47", "8 ungelesen", Icons.Material.Outlined.MarkEmailUnread, "#0EA5E9", "rgba(14, 165, 233, 0.10)", "32 %", true),
+        new("Besichtigungen", "9", "diese Woche", Icons.Material.Outlined.EventAvailable, "#F59E0B", "rgba(245, 158, 11, 0.10)", "5 %", true),
+        new("Vermietungsquote", "82 %", "Schnitt: 14 Tage", Icons.Material.Outlined.TrendingUp, "#10B981", "rgba(16, 185, 129, 0.10)", "3 %", false),
+    };
+
+    private static readonly ActivityItem[] Activities =
+    {
+        new("Lukas Weber", "hat die Selbstauskunft eingereicht.", "Sonnenallee 142, Berlin · 3-Zi", "vor 12 Min.", Icons.Material.Filled.AssignmentInd, Color.Primary),
+        new("Sarah König", "hat einen Termin für Mi., 18:00 gebucht.", "Hohenzollernring 8, Köln · 2-Zi", "vor 1 Std.", Icons.Material.Filled.EventAvailable, Color.Warning),
+        new("Mietvertrag", "erfolgreich unterschrieben durch Familie Schulz.", "Bismarckstraße 22, Hamburg · 4-Zi", "vor 3 Std.", Icons.Material.Filled.Gavel, Color.Success),
+        new("Neue Anfrage", "von Jonas Becker eingegangen.", "Goethestraße 5, München · 1-Zi", "vor 5 Std.", Icons.Material.Filled.MarkEmailUnread, Color.Info),
+        new("Erinnerung", "Unterlagen-Frist läuft morgen ab.", "Lessingplatz 4, Leipzig · 3-Zi", "vor 6 Std.", Icons.Material.Filled.Schedule, Color.Error),
+    };
+
+    private static readonly Appointment[] TodaysAppointments =
+    {
+        new("10:30", "30 Min.", "Besichtigung · Sonnenallee 142", "Berlin-Neukölln", new[] { "L. Weber", "+2 weitere" }),
+        new("14:00", "45 Min.", "Vertragsgespräch · Bismarckstr. 22", "Hamburg-Altona", new[] { "Fam. Schulz" }),
+        new("17:15", "30 Min.", "Erst-Besichtigung · Goethestr. 5", "München-Schwabing", new[] { "J. Becker" }),
+    };
+}

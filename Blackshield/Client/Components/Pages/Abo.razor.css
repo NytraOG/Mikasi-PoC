@@ -1,0 +1,13 @@
+.plan-card {
+    transition: transform 160ms ease, box-shadow 160ms ease;
+}
+
+.plan-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(15, 23, 42, 0.08);
+}
+
+.plan-card.highlighted {
+    border: 2px solid var(--mud-palette-primary);
+    box-shadow: 0 8px 32px rgba(79, 70, 229, 0.15);
+}

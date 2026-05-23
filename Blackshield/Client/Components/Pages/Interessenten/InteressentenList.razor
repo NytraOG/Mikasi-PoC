@@ -1,0 +1,233 @@
+@page "/interessenten"
+
+<PageTitle>Interessenten · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+
+    <MudStack Row="true" AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Interessenten</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">147 insgesamt · 12 neue diese Woche</MudText>
+        </MudStack>
+        <MudStack Row="true" Spacing="2">
+            <MudButton StartIcon="@Icons.Material.Outlined.MailOutline"
+                       Variant="Variant.Outlined"
+                       Color="Color.Default">
+                Sammel-E-Mail
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.PersonAdd"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Interessent einladen
+            </MudButton>
+        </MudStack>
+    </MudStack>
+
+    <MudGrid Spacing="4">
+        @foreach (var k in Kpis)
+        {
+            <MudItem xs="6" md="3">
+                <MudPaper Elevation="0" Outlined="true" Class="pa-4" Style="border-radius: 14px;">
+                    <MudStack Spacing="1">
+                        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+                            <div class="mini-icon" style="@($"background:{k.Bg};")">
+                                <MudIcon Icon="@k.Icon" Size="Size.Small" Style="@($"color:{k.IconColor};")"/>
+                            </div>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@k.Label</MudText>
+                        </MudStack>
+                        <MudText Typo="Typo.h5" Style="font-weight: 700; line-height: 1.1;">@k.Value</MudText>
+                    </MudStack>
+                </MudPaper>
+            </MudItem>
+        }
+    </MudGrid>
+
+    <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px; overflow: hidden;">
+
+        <MudTabs Rounded="false" Border="false" Elevation="0" Class="pt-2 px-3" SliderColor="Color.Primary">
+            <MudTabPanel Text="Alle"/>
+            <MudTabPanel Text="Neu" BadgeData="12" BadgeColor="Color.Primary"/>
+            <MudTabPanel Text="In Prüfung" BadgeData="8" BadgeColor="Color.Info"/>
+            <MudTabPanel Text="Eingeladen"/>
+            <MudTabPanel Text="Abgesagt"/>
+            <MudTabPanel Text="Blacklist"/>
+        </MudTabs>
+
+        <MudDivider/>
+
+        <div class="pa-4">
+            <MudStack Row="true" Spacing="2" Class="flex-wrap">
+                <MudTextField T="string"
+                              Placeholder="Name, E-Mail, Adresse…"
+                              Adornment="Adornment.Start"
+                              AdornmentIcon="@Icons.Material.Filled.Search"
+                              Variant="Variant.Outlined"
+                              Margin="Margin.Dense"
+                              Style="min-width: 280px;"/>
+                <MudSelect T="string" Placeholder="Objekt" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 200px;">
+                    <MudSelectItem Value="@("Alle")">Alle Objekte</MudSelectItem>
+                    <MudSelectItem Value="@("p1")">Sonnenallee 142</MudSelectItem>
+                    <MudSelectItem Value="@("p2")">Hohenzollernring 8</MudSelectItem>
+                </MudSelect>
+                <MudSelect T="string" Placeholder="Score" Variant="Variant.Outlined" Margin="Margin.Dense" Style="min-width: 160px;">
+                    <MudSelectItem Value="@("alle")">Alle Scores</MudSelectItem>
+                    <MudSelectItem Value="@("75")">Top-Match (≥75)</MudSelectItem>
+                    <MudSelectItem Value="@("50")">Wartet (50-74)</MudSelectItem>
+                </MudSelect>
+                <MudSpacer/>
+                <MudButton StartIcon="@Icons.Material.Outlined.Tune" Variant="Variant.Outlined" Color="Color.Default" Size="Size.Small">
+                    Weitere Filter
+                </MudButton>
+            </MudStack>
+        </div>
+
+        <MudDivider/>
+
+        <MudTable T="Prospect" Items="Prospects" Hover="true" Elevation="0" Striped="false" RowsPerPage="10">
+            <HeaderContent>
+                <MudTh><MudCheckBox T="bool" Color="Color.Primary"/></MudTh>
+                <MudTh>Name</MudTh>
+                <MudTh>Objekt</MudTh>
+                <MudTh>Eingang</MudTh>
+                <MudTh>Selbstauskunft</MudTh>
+                <MudTh>Score</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate Context="row">
+                <MudTd><MudCheckBox T="bool" Color="Color.Primary"/></MudTd>
+                <MudTd DataLabel="Name">
+                    <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+                        <MudAvatar Color="@row.AvatarColor" Size="Size.Small">@row.Initials</MudAvatar>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Name</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@row.Email</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudTd>
+                <MudTd DataLabel="Objekt">
+                    <MudText Typo="Typo.body2">@row.PropertyName</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Tertiary">@row.PropertyAddress</MudText>
+                </MudTd>
+                <MudTd DataLabel="Eingang">
+                    <MudText Typo="Typo.body2">@row.Received</MudText>
+                </MudTd>
+                <MudTd DataLabel="Selbstauskunft">
+                    @if (row.SelfDisclosure == "Eingereicht")
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Text" Icon="@Icons.Material.Filled.CheckCircle">Eingereicht</MudChip>
+                    }
+                    else if (row.SelfDisclosure == "Offen")
+                    {
+                        <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Text" Icon="@Icons.Material.Filled.Schedule">Offen</MudChip>
+                    }
+                    else
+                    {
+                        <MudChip T="string" Size="Size.Small" Variant="Variant.Text">—</MudChip>
+                    }
+                </MudTd>
+                <MudTd DataLabel="Score">
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudProgressLinear Value="@row.Score" Color="@(row.Score >= 75 ? Color.Success : row.Score >= 50 ? Color.Warning : Color.Error)" Style="width: 80px; height: 6px; border-radius: 3px;"/>
+                        <MudText Typo="Typo.caption">@row.Score %</MudText>
+                    </MudStack>
+                </MudTd>
+                <MudTd DataLabel="Status">
+                    <MudChip T="string" Size="Size.Small" Color="@row.StatusColor" Variant="Variant.Filled">@row.Status</MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small" OnClick="@(() => OpenDetail(row))"/>
+                </MudTd>
+            </RowTemplate>
+            <PagerContent>
+                <MudTablePager PageSizeOptions="@(new int[]{ 10, 25, 50 })"/>
+            </PagerContent>
+        </MudTable>
+    </MudPaper>
+</MudStack>
+
+<MudDrawer @bind-Open="@drawerOpen" Anchor="Anchor.End" Width="480px" Elevation="6" Variant="DrawerVariant.Temporary">
+    @if (Selected is not null)
+    {
+        <div class="pa-5">
+            <MudStack Row="true" AlignItems="AlignItems.Center" Justify="Justify.SpaceBetween" Class="mb-4">
+                <MudText Typo="Typo.h6">Interessent</MudText>
+                <MudIconButton Icon="@Icons.Material.Filled.Close" OnClick="@(() => drawerOpen = false)"/>
+            </MudStack>
+
+            <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="mb-4">
+                <MudAvatar Color="@Selected.AvatarColor" Size="Size.Large">@Selected.Initials</MudAvatar>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.h6">@Selected.Name</MudText>
+                    <MudText Typo="Typo.body2" Color="Color.Tertiary">@Selected.Email</MudText>
+                </MudStack>
+            </MudStack>
+
+            <MudPaper Outlined="true" Class="pa-4 mb-4" Style="border-radius: 12px;">
+                <MudStack Spacing="2">
+                    <KvRow Label="Objekt" Value="@Selected.PropertyName"/>
+                    <KvRow Label="Eingang" Value="@Selected.Received"/>
+                    <KvRow Label="Score" Value="@($"{Selected.Score} %")" Highlight="true"/>
+                    <KvRow Label="Selbstauskunft" Value="@Selected.SelfDisclosure"/>
+                    <KvRow Label="Status" Value="@Selected.Status"/>
+                </MudStack>
+            </MudPaper>
+
+            <MudText Typo="Typo.subtitle2" Class="mb-2">Aktionen</MudText>
+            <MudStack Spacing="2">
+                <MudButton FullWidth="true" StartIcon="@Icons.Material.Outlined.EventAvailable" Variant="Variant.Outlined" Color="Color.Primary" Style="justify-content: flex-start;">Besichtigung anbieten</MudButton>
+                <MudButton FullWidth="true" StartIcon="@Icons.Material.Outlined.MailOutline" Variant="Variant.Outlined" Color="Color.Default" Style="justify-content: flex-start;">E-Mail senden</MudButton>
+                <MudButton FullWidth="true" StartIcon="@Icons.Material.Outlined.AssignmentTurnedIn" Variant="Variant.Outlined" Color="Color.Default" Style="justify-content: flex-start;">Selbstauskunft anfordern</MudButton>
+                <MudButton FullWidth="true" StartIcon="@Icons.Material.Outlined.Block" Variant="Variant.Outlined" Color="Color.Error" Style="justify-content: flex-start;">Auf Blacklist setzen</MudButton>
+            </MudStack>
+        </div>
+    }
+</MudDrawer>
+
+@code {
+    private bool      drawerOpen = false;
+    public  Prospect? Selected;
+
+    private void OpenDetail(Prospect p)
+    {
+        Selected   = p;
+        drawerOpen = true;
+    }
+
+    private record KpiCard(string Label, string Value, string Icon, string Bg, string IconColor);
+
+    private static readonly KpiCard[] Kpis =
+    {
+        new("Neue Anfragen", "12",  Icons.Material.Outlined.MarkEmailUnread, "rgba(79, 70, 229, 0.10)",  "#4F46E5"),
+        new("In Prüfung",    "8",   Icons.Material.Outlined.HourglassEmpty,  "rgba(14, 165, 233, 0.10)", "#0EA5E9"),
+        new("Top-Matches",   "23",  Icons.Material.Outlined.Star,            "rgba(245, 158, 11, 0.10)", "#F59E0B"),
+        new("Auf Blacklist", "4",   Icons.Material.Outlined.Block,           "rgba(239, 68, 68, 0.10)",  "#EF4444"),
+    };
+
+    public record Prospect(
+        string Name,
+        string Initials,
+        Color AvatarColor,
+        string Email,
+        string PropertyName,
+        string PropertyAddress,
+        string Received,
+        string SelfDisclosure,
+        int Score,
+        string Status,
+        Color StatusColor);
+
+    private static readonly Prospect[] Prospects =
+    {
+        new("Lukas Weber",     "LW", Color.Primary,   "l.weber@mail.de",       "3-Zi · Neukölln",       "Sonnenallee 142",     "vor 12 Min.",  "Eingereicht", 92, "Top-Match",       Color.Success),
+        new("Sarah König",     "SK", Color.Secondary, "sarah.koenig@mail.de",  "2-Zi · Innenhof",       "Hohenzollernring 8",  "vor 1 Std.",   "Eingereicht", 78, "In Prüfung",      Color.Info),
+        new("Jonas Becker",    "JB", Color.Info,      "jonas.b@mail.de",       "1-Zi · Schwabing",      "Goethestraße 5",      "vor 5 Std.",   "Offen",       54, "Wartet",          Color.Warning),
+        new("Marlene Voigt",   "MV", Color.Tertiary,  "m.voigt@mail.de",       "3-Zi · Südvorstadt",    "Lessingplatz 4",      "gestern",      "Eingereicht", 67, "Wartet",          Color.Warning),
+        new("Familie Schulz",  "FS", Color.Warning,   "th.schulz@mail.de",     "4-Zi · Altona",         "Bismarckstraße 22",   "vor 3 Tagen",  "Eingereicht", 88, "Eingeladen",      Color.Primary),
+        new("Maximilian Roth", "MR", Color.Primary,   "max.roth@mail.de",      "Loft · Medienhafen",    "Speditionstraße 12",  "vor 4 Tagen",  "Eingereicht", 71, "In Prüfung",      Color.Info),
+        new("Lina Hoffmann",   "LH", Color.Tertiary,  "lina.h@mail.de",        "3-Zi · Friedrichshain", "Boxhagener Str. 91",  "vor 5 Tagen",  "Eingereicht", 81, "Top-Match",       Color.Success),
+        new("Tobias Klein",    "TK", Color.Info,      "tobi.klein@mail.de",    "2-Zi · Eppendorf",      "Hegestraße 17",       "vor 1 Woche",  "Offen",       42, "Abgesagt",        Color.Error),
+        new("Nina Bauer",      "NB", Color.Secondary, "nina.bauer@mail.de",    "3-Zi · Friedrichshain", "Boxhagener Str. 91",  "vor 1 Woche",  "Eingereicht", 76, "Eingeladen",      Color.Primary),
+        new("Anonym (Link)",   "?",  Color.Default,   "—",                     "3-Zi · Neukölln",       "Sonnenallee 142",     "vor 4 Tagen",  "—",           0,  "Abgebrochen",     Color.Default),
+    };
+}

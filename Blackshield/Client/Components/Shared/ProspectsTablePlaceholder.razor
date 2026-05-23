@@ -1,0 +1,64 @@
+@namespace Blackshield.Components.Shared
+
+<MudTable Items="_rows" Hover="true" Elevation="0" Striped="false">
+    <HeaderContent>
+        <MudTh>Name</MudTh>
+        <MudTh>Eingang</MudTh>
+        <MudTh>Selbstauskunft</MudTh>
+        <MudTh>Score</MudTh>
+        <MudTh>Status</MudTh>
+        <MudTh></MudTh>
+    </HeaderContent>
+    <RowTemplate Context="row">
+        <MudTd DataLabel="Name">
+            <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+                <MudAvatar Color="@row.AvatarColor" Size="Size.Small">@row.Initials</MudAvatar>
+                <MudStack Spacing="0">
+                    <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Name</MudText>
+                    <MudText Typo="Typo.caption" Color="Color.Tertiary">@row.Email</MudText>
+                </MudStack>
+            </MudStack>
+        </MudTd>
+        <MudTd DataLabel="Eingang">@row.Received</MudTd>
+        <MudTd DataLabel="Selbstauskunft">
+            @if (row.SelfDisclosure == "Eingereicht")
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Success" Variant="Variant.Text" Icon="@Icons.Material.Filled.CheckCircle">Eingereicht</MudChip>
+            }
+            else if (row.SelfDisclosure == "Offen")
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Warning" Variant="Variant.Text" Icon="@Icons.Material.Filled.Schedule">Offen</MudChip>
+            }
+            else
+            {
+                <MudChip T="string" Size="Size.Small" Color="Color.Default" Variant="Variant.Text">—</MudChip>
+            }
+        </MudTd>
+        <MudTd DataLabel="Score">
+            <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                <MudProgressLinear Value="@row.Score" Color="@(row.Score >= 75 ? Color.Success : row.Score >= 50 ? Color.Warning : Color.Error)" Style="width: 80px; height: 6px; border-radius: 3px;"/>
+                <MudText Typo="Typo.caption">@row.Score %</MudText>
+            </MudStack>
+        </MudTd>
+        <MudTd DataLabel="Status">
+            <MudChip T="string" Size="Size.Small" Color="@row.StatusColor" Variant="Variant.Filled">@row.Status</MudChip>
+        </MudTd>
+        <MudTd>
+            <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small"/>
+        </MudTd>
+    </RowTemplate>
+</MudTable>
+
+@code {
+    private record Row(string Name, string Initials, Color AvatarColor, string Email, string Received, string SelfDisclosure, int Score, string Status, Color StatusColor);
+
+    private static readonly Row[] _rows =
+    {
+        new("Lukas Weber", "LW", Color.Primary,   "l.weber@mail.de",      "vor 12 Min.", "Eingereicht", 92, "Top-Match",       Color.Success),
+        new("Sarah König", "SK", Color.Secondary, "sarah.koenig@mail.de", "vor 1 Std.",  "Eingereicht", 78, "In Prüfung",      Color.Info),
+        new("Jonas Becker", "JB", Color.Info,     "jonas.b@mail.de",      "vor 5 Std.",  "Offen",       54, "Wartet",          Color.Warning),
+        new("Marlene Voigt", "MV", Color.Tertiary, "m.voigt@mail.de",     "gestern",     "Eingereicht", 67, "Wartet",          Color.Warning),
+        new("Familie Schulz", "FS", Color.Warning, "th.schulz@mail.de",   "vor 3 Tagen", "Eingereicht", 88, "Eingeladen",      Color.Primary),
+        new("Anonym (Linkbesuch)", "?", Color.Default, "—",               "vor 4 Tagen", "—",           0,  "Abgebrochen",     Color.Default),
+    };
+}

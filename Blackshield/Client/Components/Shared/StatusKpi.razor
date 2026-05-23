@@ -1,0 +1,21 @@
+@namespace Blackshield.Components.Shared
+
+<MudPaper Elevation="0" Outlined="true" Class="pa-4" Style="border-radius: 14px;">
+    <MudStack Spacing="2">
+        <MudStack Row="true" AlignItems="AlignItems.Center" Spacing="2">
+            <div style="@($"width:36px;height:36px;border-radius:10px;display:flex;align-items:center;justify-content:center;background:{Bg};")">
+                <MudIcon Icon="@Icon" Style="@($"color:{IconColor};")"/>
+            </div>
+            <MudText Typo="Typo.caption" Color="Color.Tertiary">@Label</MudText>
+        </MudStack>
+        <MudText Typo="Typo.h4" Style="font-weight: 700; line-height: 1.1;">@Value</MudText>
+    </MudStack>
+</MudPaper>
+
+@code {
+    [Parameter] public string IconColor { get; set; } = "#4F46E5";
+    [Parameter] public string Bg { get; set; } = "rgba(79, 70, 229, 0.10)";
+    [Parameter] public string Icon { get; set; } = "";
+    [Parameter] public string Label { get; set; } = "";
+    [Parameter] public string Value { get; set; } = "";
+}

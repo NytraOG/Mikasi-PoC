@@ -1,0 +1,73 @@
+@page "/mietvertraege"
+
+<PageTitle>Mietverträge · Blackshield</PageTitle>
+
+<MudStack Spacing="6">
+    <MudStack Row="true" Justify="Justify.SpaceBetween" AlignItems="AlignItems.Start" Class="flex-wrap">
+        <MudStack Spacing="1">
+            <MudText Typo="Typo.h4" Class="blackshield-page-title">Mietverträge</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">Verwalte Vorlagen, laufende Verträge und Unterschriften.</MudText>
+        </MudStack>
+        <MudButton StartIcon="@Icons.Material.Filled.Add" Variant="Variant.Filled" Color="Color.Primary">Vertrag erstellen</MudButton>
+    </MudStack>
+
+    <MudGrid Spacing="4">
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#10B981" Bg="rgba(16, 185, 129, 0.10)" Icon="@Icons.Material.Outlined.CheckCircle" Label="Unterzeichnet" Value="38"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#F59E0B" Bg="rgba(245, 158, 11, 0.10)" Icon="@Icons.Material.Outlined.Edit" Label="In Verhandlung" Value="6"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#0EA5E9" Bg="rgba(14, 165, 233, 0.10)" Icon="@Icons.Material.Outlined.Send" Label="Versendet" Value="3"/>
+        </MudItem>
+        <MudItem xs="12" md="3">
+            <StatusKpi IconColor="#EF4444" Bg="rgba(239, 68, 68, 0.10)" Icon="@Icons.Material.Outlined.WarningAmber" Label="Gekündigt" Value="2"/>
+        </MudItem>
+    </MudGrid>
+
+    <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px;">
+        <MudTable Items="Contracts" Hover="true" Elevation="0">
+            <HeaderContent>
+                <MudTh>Vertrag</MudTh>
+                <MudTh>Objekt</MudTh>
+                <MudTh>Mieter</MudTh>
+                <MudTh>Mietbeginn</MudTh>
+                <MudTh>Status</MudTh>
+                <MudTh></MudTh>
+            </HeaderContent>
+            <RowTemplate Context="row">
+                <MudTd DataLabel="Vertrag">
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Filled.Gavel" Color="Color.Primary"/>
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Number</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@row.Type</MudText>
+                        </MudStack>
+                    </MudStack>
+                </MudTd>
+                <MudTd>@row.Property</MudTd>
+                <MudTd>@row.Tenant</MudTd>
+                <MudTd>@row.StartDate</MudTd>
+                <MudTd>
+                    <MudChip T="string" Size="Size.Small" Color="@row.StatusColor" Variant="Variant.Filled">@row.Status</MudChip>
+                </MudTd>
+                <MudTd>
+                    <MudIconButton Icon="@Icons.Material.Filled.ChevronRight" Size="Size.Small"/>
+                </MudTd>
+            </RowTemplate>
+        </MudTable>
+    </MudPaper>
+</MudStack>
+
+@code {
+    private record Contract(string Number, string Type, string Property, string Tenant, string StartDate, string Status, Color StatusColor);
+
+    private static readonly Contract[] Contracts =
+    {
+        new("MV-2026-0142", "Unbefristet", "Bismarckstraße 22, Hamburg",   "Familie Schulz",   "01.07.2026", "Unterzeichnet", Color.Success),
+        new("MV-2026-0141", "Befristet 2J","Sonnenallee 142, Berlin",       "L. Weber",         "01.06.2026", "Versendet",     Color.Info),
+        new("MV-2026-0140", "Unbefristet", "Boxhagener Str. 91, Berlin",    "L. Hoffmann",      "15.06.2026", "In Verhandlung",Color.Warning),
+        new("MV-2026-0139", "Unbefristet", "Speditionstraße 12, Düsseldorf","M. Roth",          "01.06.2026", "In Verhandlung",Color.Warning),
+    };
+}
