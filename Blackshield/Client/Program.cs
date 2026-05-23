@@ -1,11 +1,12 @@
+using Blackshield.Components;
+using Blackshield.Components.Account;
+using Blackshield.Data;
+using Domain.Data.Contexts;
+using Domain.Data.Entities.Security;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using Blackshield.Components;
-using Blackshield.Components.Account;
-using Blackshield.Data;
-using Domain.Data.Entities.Security;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -28,8 +29,13 @@ builder.Services.AddAuthentication(options =>
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-                                                            options.UseSqlite(connectionString));
+//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
+builder.Services.AddDbContextPool<DefaultContext>(opt =>
+{
+    opt.UseNpgsql(connectionString,
+                  o => o.SetPostgresVersion(18, 0))
+       .UseSnakeCaseNamingConvention();
+});
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>
@@ -47,12 +53,10 @@ var app = builder.Build();
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
-{
     app.UseMigrationsEndPoint();
-}
 else
 {
-    app.UseExceptionHandler("/Error", createScopeForErrors: true);
+    app.UseExceptionHandler("/Error", true);
     // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
     app.UseHsts();
 }
