@@ -1,11 +1,12 @@
 ﻿using System.Reflection;
 using Domain.Data.Entities;
 using Domain.Data.Entities.Security;
+using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Data.Contexts;
 
-public class DefaultContext(DbContextOptions<DefaultContext> options) : DbContext(options)
+public class DefaultContext(DbContextOptions<DefaultContext> options) : IdentityDbContext(options)
 {
     public DbSet<Wirtschaftseinheit> Wirtschaftseinheiten => Set<Wirtschaftseinheit>();
     public DbSet<Nutzungseinheit>    Nutzungseinheiten    => Set<Nutzungseinheit>();
@@ -13,6 +14,7 @@ public class DefaultContext(DbContextOptions<DefaultContext> options) : DbContex
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
+        base.OnModelCreating(modelBuilder);
         modelBuilder.HasDefaultSchema("blackshield");
         modelBuilder.Entity<ApplicationUser>().ToTable("users", schema: "identity");
         modelBuilder.ApplyConfigurationsFromAssembly(Assembly.GetExecutingAssembly());

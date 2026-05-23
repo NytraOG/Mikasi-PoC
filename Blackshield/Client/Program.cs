@@ -2,6 +2,7 @@ using Blackshield.Components;
 using Blackshield.Components.Account;
 using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
+using Domain.Data.Interceptors;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -33,7 +34,9 @@ builder.Services.AddDbContextPool<DefaultContext>(opt =>
 {
     opt.UseNpgsql(connectionString,
                   o => o.SetPostgresVersion(18, 0))
-       .UseSnakeCaseNamingConvention();
+       .UseSnakeCaseNamingConvention()
+       .AddInterceptors(new AuditInterceptor());
+    ;
 });
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
