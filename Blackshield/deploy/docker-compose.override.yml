@@ -1,0 +1,16 @@
+# Lokale Entwickler-Overrides — wird automatisch geladen, wenn man im selben Ordner
+# `docker compose up` ausführt. Auf Prod NICHT laden.
+
+services:
+  postgres:
+    # Port nach außen exponieren — damit du mit DBeaver/Rider/pgAdmin
+    # via localhost:5432 verbinden kannst.
+    ports:
+      - "5432:5432"
+    # Verbose Logging hilft beim Debuggen — auf Prod nicht aktivieren.
+    command:
+      - postgres
+      - -c
+      - log_statement=all
+      - -c
+      - log_min_duration_statement=0

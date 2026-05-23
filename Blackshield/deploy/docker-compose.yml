@@ -1,0 +1,29 @@
+# Basis-Konfiguration für Blackshield-Postgres.
+# Läuft sowohl lokal als auch auf dem Hetzner-Server.
+# Lokal lädt Docker zusätzlich automatisch docker-compose.override.yml.
+# Auf Prod startet man mit:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  postgres:
+    image: postgres:17.2
+    container_name: blackshield-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_DB: ${POSTGRES_DB:-blackshield}
+      POSTGRES_USER: ${POSTGRES_USER:-blackshield}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?Bitte POSTGRES_PASSWORD in .env setzen}
+      POSTGRES_INITDB_ARGS: "--data-checksums --encoding=UTF8 --locale=C.UTF-8"
+      TZ: Europe/Berlin
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-blackshield} -d ${POSTGRES_DB:-blackshield}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+volumes:
+  pgdata:
+    name: blackshield-pgdata

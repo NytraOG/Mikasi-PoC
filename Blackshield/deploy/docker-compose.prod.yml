@@ -1,0 +1,45 @@
+# Produktions-Overrides für den Hetzner-Server.
+# Wird NICHT automatisch geladen — explizit angeben:
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d
+
+services:
+  postgres:
+    # Postgres ausschließlich im internen Docker-Netz erreichbar — NICHT öffentlich.
+    # Wenn du von außen drauf willst: SSH-Tunnel benutzen.
+    ports: []
+    # Kein verbose Logging in Prod
+    command:
+      - postgres
+      - -c
+      - log_min_duration_statement=200
+
+  backup:
+    image: postgres:17.2
+    container_name: blackshield-backup
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      PGHOST: postgres
+      PGUSER: ${POSTGRES_USER:-blackshield}
+      PGPASSWORD: ${POSTGRES_PASSWORD}
+      PGDATABASE: ${POSTGRES_DB:-blackshield}
+      TZ: Europe/Berlin
+    volumes:
+      - ./backups:/backups
+    entrypoint:
+      - sh
+      - -c
+      - |
+        set -eu
+        echo "Backup-Sidecar gestartet."
+        while true; do
+          ts=$$(date +%Y%m%d-%H%M%S)
+          target="/backups/blackshield-$$ts.dump"
+          echo "[$$ts] dump → $$target"
+          pg_dump -Fc -f "$$target"
+          # Behalte die letzten 14 Dumps
+          ls -1t /backups/blackshield-*.dump | tail -n +15 | xargs -r rm
+          sleep 86400
+        done

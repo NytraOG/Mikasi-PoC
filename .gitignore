@@ -427,3 +427,18 @@ FodyWeavers.xsd
 *.msix
 *.msm
 *.msp
+
+# Blackshield deploy
+Blackshield/deploy/.env
+Blackshield/deploy/.env.*
+!Blackshield/deploy/.env.example
+Blackshield/deploy/backups/
+Blackshield/deploy/.secrets/
+
+# Local ASP.NET configs
+appsettings.Local.json
+appsettings.*.Local.json
+secrets.json
+*.pem
+*.pfx
+*.p12
