@@ -11,4 +11,6 @@ public class Wirtschaftseinheit : BaseEntity
     public required  string                     PLZ         { get; set; }
     public required  string                     Ort         { get; set; }
     public           IReadOnlyCollection<Etage> Etagen      => etagen;
+
+    public void AddEtage(Etage etage) => etagen.Add(etage);
 }

@@ -3,6 +3,7 @@ using Blackshield.Components.Account;
 using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
 using Domain.Data.Interceptors;
+using Domain.Services;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -40,6 +41,10 @@ builder.Services.AddPooledDbContextFactory<DefaultContext>((sp, opt) =>
 });
 
 builder.Services.AddScoped<DefaultContext>(sp => sp.GetRequiredService<IDbContextFactory<DefaultContext>>().CreateDbContext());
+builder.Services.AddTransient<WohnobjektService>();
+
+
+
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>

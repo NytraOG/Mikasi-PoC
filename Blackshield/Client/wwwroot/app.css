@@ -73,9 +73,8 @@ html, body {
     content: "";
     position: absolute;
     inset: 0;
-    background-image:
-        radial-gradient(circle at 20% 15%, rgba(99, 102, 241, 0.35), transparent 45%),
-        radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.20), transparent 50%);
+    background-image: radial-gradient(circle at 20% 15%, rgba(99, 102, 241, 0.35), transparent 45%),
+    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.20), transparent 50%);
     pointer-events: none;
 }
 

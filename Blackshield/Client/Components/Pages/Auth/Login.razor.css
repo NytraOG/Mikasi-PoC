@@ -9,6 +9,7 @@
     .auth-shell {
         grid-template-columns: 1fr;
     }
+
     .auth-hero {
         display: none;
     }

@@ -9,4 +9,6 @@ public class Etage : BaseEntity
     public           Guid                                 WirtschaftseinheitId { get; set; }
     public           Wirtschaftseinheit?                  Wirtschaftseinheit   { get; set; }
     public           IReadOnlyCollection<Nutzungseinheit> Nutzungseinheiten    => nutzungseinheiten;
+
+    public void AddNutzungseinheit(Nutzungseinheit nutzungseinheit) => nutzungseinheiten.Add(nutzungseinheit);
 }
