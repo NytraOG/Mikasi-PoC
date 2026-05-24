@@ -18,10 +18,10 @@
                         <MudText Typo="Typo.h6" Class="mb-3">Eckdaten</MudText>
                         <MudGrid Spacing="3">
                             <MudItem xs="12">
-                                <MudTextField T="string" Label="Bezeichnung" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="z. B. 3-Zimmer Altbau · Neukölln"/>
+                                <MudTextField T="string" Label="Bezeichnung" @bind="Bezeichnung" Variant="Variant.Outlined" Margin="Margin.Dense" Placeholder="z. B. 3-Zimmer Altbau · Neukölln"/>
                             </MudItem>
                             <MudItem xs="12" md="8">
-                                <MudTextField T="string" Label="Straße &amp; Hausnummer" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                <MudTextField T="string" Label="Straße & Hausnummer" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem xs="6" md="2">
                                 <MudTextField T="string" Label="PLZ" Variant="Variant.Outlined" Margin="Margin.Dense"/>
@@ -149,6 +149,9 @@
 </MudStack>
 
 @code {
+    public string? Bezeichnung { get; set; }
+    //Todo Service bauen/injecten/callen next
+
     private List<BreadcrumbItem> _breadcrumbs = new()
     {
         new("Objekte", href: "/objekte"),
