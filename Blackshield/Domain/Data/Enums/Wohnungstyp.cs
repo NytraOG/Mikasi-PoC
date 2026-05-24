@@ -3,6 +3,5 @@
 public enum Wohnungstyp
 {
     Wohnung,
-    Haus,
-    //...
+    Haus
 }

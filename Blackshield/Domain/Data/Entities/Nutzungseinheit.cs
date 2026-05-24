@@ -10,8 +10,6 @@ public class Nutzungseinheit : BaseEntity
     public          Etage?              Etage                { get; set; }
     public          int                 AnzahlZimmer         { get; set; }
     public          decimal             Wohnfläche           { get; set; }
-    public          Guid                WirtschaftseinheitId { get; set; }
-    public          Wirtschaftseinheit? Wirtschaftseinheit   { get; set; }
     public          Wohnungstyp         Typ                  { get; set; }
     public          Preis               Kaltmiete            { get; set; }
     public          Preis               Nebenkosten          { get; set; }

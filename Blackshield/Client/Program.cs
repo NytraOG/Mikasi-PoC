@@ -27,17 +27,19 @@ builder.Services.AddAuthentication(options =>
         })
        .AddIdentityCookies();
 
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddSingleton<AuditInterceptor>();
+
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 
-//builder.Services.AddDbContext<ApplicationDbContext>(options => options.UseSqlite(connectionString));
-builder.Services.AddDbContextPool<DefaultContext>(opt =>
+builder.Services.AddPooledDbContextFactory<DefaultContext>((sp, opt) =>
 {
-    opt.UseNpgsql(connectionString,
-                  o => o.SetPostgresVersion(18, 0))
+    opt.UseNpgsql(connectionString, o => o.SetPostgresVersion(18, 0))
        .UseSnakeCaseNamingConvention()
-       .AddInterceptors(new AuditInterceptor());
-    ;
+       .AddInterceptors(sp.GetRequiredService<AuditInterceptor>());
 });
+
+builder.Services.AddScoped<DefaultContext>(sp => sp.GetRequiredService<IDbContextFactory<DefaultContext>>().CreateDbContext());
 builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
 builder.Services.AddIdentityCore<ApplicationUser>(options =>

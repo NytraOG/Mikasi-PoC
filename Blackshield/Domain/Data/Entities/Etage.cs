@@ -4,7 +4,7 @@ namespace Domain.Data.Entities;
 
 public class Etage : BaseEntity
 {
-    private readonly List<Nutzungseinheit>                nutzungseinheiten = new();
+    private readonly List<Nutzungseinheit>                nutzungseinheiten = [];
     public required  string                               Bezeichnung          { get; set; }
     public           Guid                                 WirtschaftseinheitId { get; set; }
     public           Wirtschaftseinheit?                  Wirtschaftseinheit   { get; set; }

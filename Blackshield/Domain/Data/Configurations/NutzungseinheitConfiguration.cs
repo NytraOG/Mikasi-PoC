@@ -14,13 +14,14 @@ internal sealed class NutzungseinheitConfiguration : BaseEntityConfiguration<Nut
         builder.Property(ne => ne.Beschreibung).HasMaxLength(2000);
         builder.Property(ne => ne.Wohnfläche).HasPrecision(8, 2);
         builder.Property(ne => ne.Typ).HasConversion<string>().HasMaxLength(50);
-        builder.ComplexProperty(ne => ne.Kaltmiete, ConfigureGeld);
-        builder.ComplexProperty(ne => ne.Nebenkosten, ConfigureGeld);
-        builder.ComplexProperty(ne => ne.Heizkosten, ConfigureGeld);
-        builder.ComplexProperty(ne => ne.Kaution, ConfigureGeld);
+
+        builder.ComplexProperty(ne => ne.Kaltmiete, ConfigurePreis);
+        builder.ComplexProperty(ne => ne.Nebenkosten, ConfigurePreis);
+        builder.ComplexProperty(ne => ne.Heizkosten, ConfigurePreis);
+        builder.ComplexProperty(ne => ne.Kaution, ConfigurePreis);
     }
 
-    private static void ConfigureGeld(ComplexPropertyBuilder<Preis> b)
+    private static void ConfigurePreis(ComplexPropertyBuilder<Preis> b)
     {
         b.Property(g => g.Betrag).HasPrecision(12, 2);
         b.Property(g => g.Währung).HasMaxLength(3).IsFixedLength();

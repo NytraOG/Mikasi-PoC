@@ -16,11 +16,6 @@ internal sealed class WirtschaftseinheitConfiguration : BaseEntityConfiguration<
         builder.Property(we => we.PLZ).HasMaxLength(10);
         builder.Property(we => we.Ort).HasMaxLength(150);
 
-        builder.HasMany(we => we.Nutzungseinheiten)
-               .WithOne(ne => ne.Wirtschaftseinheit)
-               .HasForeignKey(ne => ne.WirtschaftseinheitId)
-               .OnDelete(DeleteBehavior.Cascade);
-
         builder.HasMany(we => we.Etagen)
                .WithOne(e => e.Wirtschaftseinheit)
                .HasForeignKey(e => e.WirtschaftseinheitId)
