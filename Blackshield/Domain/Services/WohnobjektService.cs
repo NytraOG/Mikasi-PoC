@@ -23,7 +23,10 @@ public class WohnobjektService
         await dbContext.SaveChangesAsync();
     }
 
-    public async Task<Nutzungseinheit> LoadNutzungseinheitByIdAsync(Guid id) => await dbContext.Nutzungseinheiten.FirstOrDefaultAsync(ne => ne.Id == id);
+    public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
+                                                                                    .Include(ne => ne.Etage)
+                                                                                    .ThenInclude(e => e.Wirtschaftseinheit)
+                                                                                    .FirstOrDefaultAsync(ne => ne.Id == id);
 
     public Wirtschaftseinheit[] LoadAllWirtschaftseinheiten() => dbContext.Wirtschaftseinheiten.ToArray();
 
@@ -62,7 +65,7 @@ public class WohnobjektService
 
         if (etage is null)
         {
-            etage = new Etage { Bezeichnung = model.Etage!.Trim() };
+            etage = new Etage { Wirtschaftseinheit = wirtschaftseinheit, Bezeichnung = model.Etage!.Trim() };
 
             wirtschaftseinheit.AddEtage(etage);
             dbContext.Etagen.Add(etage);
@@ -79,6 +82,7 @@ public class WohnobjektService
         {
             nutzungseinheit = new Nutzungseinheit
             {
+                Etage             = etage,
                 Bezeichnung       = model.BezeichnungNutzungseinheit,
                 Beschreibung      = model.Beschreibung,
                 AnzahlZimmer      = model.AnzahlZimmer,

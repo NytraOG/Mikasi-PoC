@@ -7,7 +7,7 @@ public class Nutzungseinheit : BaseEntity
 {
     public required string      Bezeichnung       { get; set; }
     public          Guid        EtageId           { get; set; }
-    public          Etage?      Etage             { get; set; }
+    public required Etage       Etage             { get; set; }
     public          int         AnzahlZimmer      { get; set; }
     public          decimal     Wohnfläche        { get; set; }
     public          Wohnungstyp Typ               { get; set; }
@@ -18,6 +18,7 @@ public class Nutzungseinheit : BaseEntity
     public          Preis       Kaution           { get; set; }
     public          DateOnly    FrühesterEinzugAb { get; set; }
     public          string?     Beschreibung      { get; set; }
+    public          decimal     Warmmiete         => Kaltmiete.Betrag + Nebenkosten.Betrag + Heizkosten.Betrag;
 
     public string? GetFullAddress() => Etage?.Wirtschaftseinheit?.GetFullAddress();
 }

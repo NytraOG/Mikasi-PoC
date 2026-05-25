@@ -1,182 +1,192 @@
 @page "/objekte/{Id}"
 @using Domain.Data.Entities
 @using Domain.Services
+@attribute [StreamRendering]
 
 <PageTitle>Objekt · Blackshield</PageTitle>
 
 <MudStack Spacing="5">
 
-    <MudBreadcrumbs Items="_breadcrumbs" Class="pa-0" Separator=">"/>
+    <MudBreadcrumbs Items="breadcrumbs" Class="pa-0" Separator=">"/>
 
-    <MudGrid Spacing="4" Style="align-items: center;">
-        <MudItem xs="12" md="3">
-            <div class="object-hero" style="background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); border-radius: 16px; height: 180px;"></div>
-        </MudItem>
-        <MudItem xs="12" md="9">
-            <MudStack Spacing="2">
-                <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                    <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled">@Nutzungseinheit.Status</MudChip>
-                    <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Seit 14 Tagen HARDCODED</MudChip>
+    @if (Nutzungseinheit is null)
+    {
+        <MudStack AlignItems="AlignItems.Center" Class="pa-8">
+            <MudProgressCircular Indeterminate="true"
+                                 Color="Color.Primary"
+                                 Size="Size.Large"/>
+            <MudText Typo="Typo.body2" Color="Color.Tertiary">Lade Objekt…</MudText>
+        </MudStack>
+    }
+    else
+    {
+        <MudGrid Spacing="4" Style="align-items: center;">
+            <MudItem xs="12" md="3">
+                <div class="object-hero" style="background: linear-gradient(135deg, #6366F1 0%, #A855F7 100%); border-radius: 16px; height: 180px;"></div>
+            </MudItem>
+            <MudItem xs="12" md="9">
+                <MudStack Spacing="2">
+                    <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
+                        <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled">@Nutzungseinheit.Status</MudChip>
+                        <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Seit 14 Tagen HARDCODED</MudChip>
+                    </MudStack>
+                    <MudText Typo="Typo.h4" Class="blackshield-page-title">@Nutzungseinheit.Bezeichnung</MudText>
+                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                        <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Color="Color.Tertiary" Size="Size.Small"/>
+                        <MudText Typo="Typo.body1" Color="Color.Tertiary">@Nutzungseinheit.GetFullAddress()</MudText>
+                    </MudStack>
+                    <MudStack Row="true" Spacing="4" Class="mt-2 flex-wrap">
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Outlined.Euro" Color="Color.Primary" Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Kaltmiete.Betrag.ToString("C0")</b> / Monat</MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Outlined.SquareFoot" Color="Color.Primary" Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Wohnfläche m²</b></MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Outlined.Bed" Color="Color.Primary" Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.AnzahlZimmer Zimmer</b></MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Outlined.Stairs" Color="Color.Primary" Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Etage?.Bezeichnung</b></MudText>
+                        </MudStack>
+                        <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
+                            <MudIcon Icon="@Icons.Material.Outlined.People" Color="Color.Primary" Size="Size.Small"/>
+                            <MudText Typo="Typo.subtitle2"><b>14 Interessenten HARDCODED</b></MudText>
+                        </MudStack>
+                    </MudStack>
                 </MudStack>
-                <MudText Typo="Typo.h4" Class="blackshield-page-title">@Nutzungseinheit.Bezeichnung</MudText>
-                <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                    <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Color="Color.Tertiary" Size="Size.Small"/>
-                    <MudText Typo="Typo.body1" Color="Color.Tertiary">@Nutzungseinheit.GetFullAddress()</MudText>
-                </MudStack>
-                <MudStack Row="true" Spacing="4" Class="mt-2 flex-wrap">
-                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Outlined.Euro" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Kaltmiete.Betrag.ToString("C0") €</b> / Monat</MudText>
-                    </MudStack>
-                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Outlined.SquareFoot" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Wohnfläche m²</b></MudText>
-                    </MudStack>
-                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Outlined.Bed" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.AnzahlZimmer Zimmer</b></MudText>
-                    </MudStack>
-                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Outlined.Stairs" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Etage?.Bezeichnung</b></MudText>
-                    </MudStack>
-                    <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
-                        <MudIcon Icon="@Icons.Material.Outlined.People" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>14 Interessenten HARDCODED</b></MudText>
-                    </MudStack>
-                </MudStack>
-            </MudStack>
-        </MudItem>
-    </MudGrid>
+            </MudItem>
+        </MudGrid>
 
-    <MudStack Row="true" Spacing="2" Class="flex-wrap">
-        <MudButton StartIcon="@Icons.Material.Filled.PersonAdd"
-                   Variant="Variant.Filled"
-                   Color="Color.Primary">
-            Interessent einladen
-        </MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.EventAvailable"
-                   Variant="Variant.Outlined"
-                   Color="Color.Default">
-            Besichtigung planen
-        </MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Share"
-                   Variant="Variant.Outlined"
-                   Color="Color.Default">
-            Link teilen
-        </MudButton>
-        <MudButton StartIcon="@Icons.Material.Filled.Edit"
-                   Variant="Variant.Text"
-                   Color="Color.Default">
-            Bearbeiten
-        </MudButton>
-        <MudSpacer/>
-        <MudMenu Icon="@Icons.Material.Filled.MoreVert" Variant="Variant.Outlined" Color="Color.Default">
-            <MudMenuItem Icon="@Icons.Material.Outlined.Archive">Archivieren</MudMenuItem>
-            <MudMenuItem Icon="@Icons.Material.Outlined.ContentCopy">Duplizieren</MudMenuItem>
-            <MudMenuItem Icon="@Icons.Material.Outlined.Delete" Style="color: var(--mud-palette-error);">Löschen</MudMenuItem>
-        </MudMenu>
-    </MudStack>
+        <MudStack Row="true" Spacing="2" Class="flex-wrap">
+            <MudButton StartIcon="@Icons.Material.Filled.PersonAdd"
+                       Variant="Variant.Filled"
+                       Color="Color.Primary">
+                Interessent einladen
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.EventAvailable"
+                       Variant="Variant.Outlined"
+                       Color="Color.Default">
+                Besichtigung planen
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Share"
+                       Variant="Variant.Outlined"
+                       Color="Color.Default">
+                Link teilen
+            </MudButton>
+            <MudButton StartIcon="@Icons.Material.Filled.Edit"
+                       Variant="Variant.Text"
+                       Color="Color.Default">
+                Bearbeiten
+            </MudButton>
+            <MudSpacer/>
+            <MudMenu Icon="@Icons.Material.Filled.MoreVert" Variant="Variant.Outlined" Color="Color.Default">
+                <MudMenuItem Icon="@Icons.Material.Outlined.Archive">Archivieren</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Outlined.ContentCopy">Duplizieren</MudMenuItem>
+                <MudMenuItem Icon="@Icons.Material.Outlined.Delete" Style="color: var(--mud-palette-error);">Löschen</MudMenuItem>
+            </MudMenu>
+        </MudStack>
 
-    <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px;">
-        <MudTabs Rounded="false" Border="false" Elevation="0" SliderColor="Color.Primary" Class="pt-2 px-3">
-            <MudTabPanel Text="Übersicht" Icon="@Icons.Material.Outlined.Info">
-                <div class="pa-5">
-                    <MudGrid Spacing="4">
-                        <MudItem xs="12" md="7">
-                            <MudStack Spacing="4">
-                                <div>
-                                    <MudText Typo="Typo.h6" Class="mb-2">Beschreibung</MudText>
-                                    <MudText Typo="Typo.body2" Color="Color.Tertiary">
-                                        Charmante 3-Zimmer-Altbauwohnung mit Stuck, Dielenboden und renoviertem
-                                        Tageslichtbad. Ruhige Lage, gute Verkehrsanbindung. Energiebedarfsausweis vorhanden,
-                                        Bj. 1908. Sofort beziehbar.
-                                    </MudText>
-                                </div>
-                                <div>
-                                    <MudText Typo="Typo.h6" Class="mb-2">Ausstattung</MudText>
-                                    <MudStack Row="true" Spacing="2" Class="flex-wrap">
-                                        @foreach (var f in Features)
-                                        {
-                                            <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Outlined.Check">@f</MudChip>
-                                        }
-                                    </MudStack>
-                                </div>
-                            </MudStack>
-                        </MudItem>
-                        <MudItem xs="12" md="5">
-                            <MudPaper Elevation="0" Outlined="true" Class="pa-4" Style="border-radius: 12px;">
-                                <MudText Typo="Typo.h6" Class="mb-3">Konditionen</MudText>
-                                <MudStack Spacing="2">
-                                    <KvRow Label="Kaltmiete" Value="1.320 €"/>
-                                    <KvRow Label="Nebenkosten" Value="220 €"/>
-                                    <KvRow Label="Heizkosten" Value="110 €"/>
-                                    <MudDivider/>
-                                    <KvRow Label="Warmmiete" Value="1.650 €" Highlight="true"/>
-                                    <MudDivider/>
-                                    <KvRow Label="Kaution" Value="3 Kaltmieten"/>
-                                    <KvRow Label="Provision" Value="Provisionsfrei"/>
-                                    <KvRow Label="Bezugstermin" Value="ab sofort"/>
-                                </MudStack>
-                            </MudPaper>
-                        </MudItem>
-                    </MudGrid>
-                </div>
-            </MudTabPanel>
-
-            <MudTabPanel Text="Interessenten" Icon="@Icons.Material.Outlined.People" BadgeData="14" BadgeColor="Color.Primary">
-                <div class="pa-5">
-                    <ProspectsTablePlaceholder/>
-                </div>
-            </MudTabPanel>
-
-            <MudTabPanel Text="Termine" Icon="@Icons.Material.Outlined.CalendarMonth" BadgeData="3" BadgeColor="Color.Warning">
-                <div class="pa-5">
-                    <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" NoIcon="false">
-                        3 anstehende Besichtigungen für dieses Objekt. Termin-Verwaltung erfolgt im Modul "Termine".
-                    </MudAlert>
-                </div>
-            </MudTabPanel>
-
-            <MudTabPanel Text="Unterlagen" Icon="@Icons.Material.Outlined.Description">
-                <div class="pa-5">
-                    <MudGrid Spacing="3">
-                        @foreach (var doc in Documents)
-                        {
-                            <MudItem xs="12" sm="6" md="4">
-                                <MudPaper Outlined="true" Class="pa-4" Style="border-radius: 12px;">
-                                    <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
-                                        <MudIcon Icon="@doc.Icon" Color="@doc.Color" Size="Size.Large"/>
-                                        <MudStack Spacing="0" Style="flex:1;">
-                                            <MudText Typo="Typo.body2" Style="font-weight: 600;">@doc.Name</MudText>
-                                            <MudText Typo="Typo.caption" Color="Color.Tertiary">@doc.Meta</MudText>
+        <MudPaper Elevation="0" Outlined="true" Style="border-radius: 16px;">
+            <MudTabs Rounded="false" Border="false" Elevation="0" SliderColor="Color.Primary" Class="pt-2 px-3">
+                <MudTabPanel Text="Übersicht" Icon="@Icons.Material.Outlined.Info">
+                    <div class="pa-5">
+                        <MudGrid Spacing="4">
+                            <MudItem xs="12" md="7">
+                                <MudStack Spacing="4">
+                                    <div>
+                                        <MudText Typo="Typo.h6" Class="mb-2">Beschreibung</MudText>
+                                        <MudText Typo="Typo.body2" Color="Color.Tertiary">@Nutzungseinheit.Beschreibung
+                                        </MudText>
+                                    </div>
+                                    <div>
+                                        <MudText Typo="Typo.h6" Class="mb-2">Ausstattung</MudText>
+                                        <MudStack Row="true" Spacing="2" Class="flex-wrap">
+                                            @foreach (var f in Features)
+                                            {
+                                                <MudChip T="string" Variant="Variant.Outlined" Size="Size.Small" Icon="@Icons.Material.Outlined.Check">@f</MudChip>
+                                            }
                                         </MudStack>
-                                        <MudIconButton Icon="@Icons.Material.Filled.Download" Size="Size.Small"/>
+                                    </div>
+                                </MudStack>
+                            </MudItem>
+                            <MudItem xs="12" md="5">
+                                <MudPaper Elevation="0" Outlined="true" Class="pa-4" Style="border-radius: 12px;">
+                                    <MudText Typo="Typo.h6" Class="mb-3">Konditionen</MudText>
+                                    <MudStack Spacing="2">
+                                        <KvRow Label="Kaltmiete" Value="@Nutzungseinheit.Kaltmiete.Betrag.ToString("C0")"/>
+                                        <KvRow Label="Nebenkosten" Value="@Nutzungseinheit.Nebenkosten.Betrag.ToString("C0")"/>
+                                        <KvRow Label="Heizkosten" Value="@Nutzungseinheit.Heizkosten.Betrag.ToString("C0")"/>
+                                        <MudDivider/>
+                                        <KvRow Label="Warmmiete" Value="@Nutzungseinheit.Warmmiete.ToString("C0")" Highlight="true"/>
+                                        <MudDivider/>
+                                        <KvRow Label="Kaution" Value="3 Kaltmieten HARDCODED"/>
+                                        <KvRow Label="Provision" Value="Provisionsfrei HARDCODED"/>
+                                        <KvRow Label="Bezugstermin" Value="ab sofort HARDCODED"/>
                                     </MudStack>
                                 </MudPaper>
                             </MudItem>
-                        }
-                    </MudGrid>
-                </div>
-            </MudTabPanel>
+                        </MudGrid>
+                    </div>
+                </MudTabPanel>
 
-            <MudTabPanel Text="Verlauf" Icon="@Icons.Material.Outlined.History">
-                <div class="pa-5">
-                    <MudTimeline TimelinePosition="TimelinePosition.Start">
-                        @foreach (var t in History)
-                        {
-                            <MudTimelineItem Color="@t.Color" Size="Size.Small">
-                                <ItemContent>
-                                    <MudText Typo="Typo.body2"><b>@t.Title</b></MudText>
-                                    <MudText Typo="Typo.caption" Color="Color.Tertiary">@t.Date</MudText>
-                                </ItemContent>
-                            </MudTimelineItem>
-                        }
-                    </MudTimeline>
-                </div>
-            </MudTabPanel>
-        </MudTabs>
-    </MudPaper>
+                <MudTabPanel Text="Interessenten" Icon="@Icons.Material.Outlined.People" BadgeData="14" BadgeColor="Color.Primary">
+                    <div class="pa-5">
+                        <ProspectsTablePlaceholder/>
+                    </div>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Termine" Icon="@Icons.Material.Outlined.CalendarMonth" BadgeData="3" BadgeColor="Color.Warning">
+                    <div class="pa-5">
+                        <MudAlert Severity="Severity.Info" Variant="Variant.Outlined" NoIcon="false">
+                            3 anstehende Besichtigungen für dieses Objekt. Termin-Verwaltung erfolgt im Modul "Termine".
+                        </MudAlert>
+                    </div>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Unterlagen" Icon="@Icons.Material.Outlined.Description">
+                    <div class="pa-5">
+                        <MudGrid Spacing="3">
+                            @foreach (var doc in Documents)
+                            {
+                                <MudItem xs="12" sm="6" md="4">
+                                    <MudPaper Outlined="true" Class="pa-4" Style="border-radius: 12px;">
+                                        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
+                                            <MudIcon Icon="@doc.Icon" Color="@doc.Color" Size="Size.Large"/>
+                                            <MudStack Spacing="0" Style="flex:1;">
+                                                <MudText Typo="Typo.body2" Style="font-weight: 600;">@doc.Name</MudText>
+                                                <MudText Typo="Typo.caption" Color="Color.Tertiary">@doc.Meta</MudText>
+                                            </MudStack>
+                                            <MudIconButton Icon="@Icons.Material.Filled.Download" Size="Size.Small"/>
+                                        </MudStack>
+                                    </MudPaper>
+                                </MudItem>
+                            }
+                        </MudGrid>
+                    </div>
+                </MudTabPanel>
+
+                <MudTabPanel Text="Verlauf" Icon="@Icons.Material.Outlined.History">
+                    <div class="pa-5">
+                        <MudTimeline TimelinePosition="TimelinePosition.Start">
+                            @foreach (var t in History)
+                            {
+                                <MudTimelineItem Color="@t.Color" Size="Size.Small">
+                                    <ItemContent>
+                                        <MudText Typo="Typo.body2"><b>@t.Title</b></MudText>
+                                        <MudText Typo="Typo.caption" Color="Color.Tertiary">@t.Date</MudText>
+                                    </ItemContent>
+                                </MudTimelineItem>
+                            }
+                        </MudTimeline>
+                    </div>
+                </MudTabPanel>
+            </MudTabs>
+        </MudPaper>
+    }
 </MudStack>
 
 @inject WohnobjektService     Service;
@@ -186,21 +196,21 @@
     [Parameter]
     public string Id { get; set; } = string.Empty;
 
-    public required Nutzungseinheit Nutzungseinheit { get; set; }
+    public Nutzungseinheit? Nutzungseinheit { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
         var id = Guid.Parse(Id);
         Nutzungseinheit = await Service.LoadNutzungseinheitByIdAsync(id);
+        breadcrumbs.Add(new BreadcrumbItem(Nutzungseinheit?.GetFullAddress() ?? "N/A", null, true));
 
         await base.OnParametersSetAsync();
     }
 
-    private List<BreadcrumbItem> _breadcrumbs = new()
-    {
-        new("Objekte", href: "/objekte"),
-        new("Sonnenallee 142", href: null, disabled: true)
-    };
+    private readonly List<BreadcrumbItem> breadcrumbs =
+    [
+        new("Objekte", href: "/objekte")
+    ];
 
     private static readonly string[] Features =
     {
