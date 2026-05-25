@@ -1,0 +1,234 @@
+﻿@page "/objekte/bearbeiten/{Id}"
+@using Domain.Data.Enums
+@using Domain.Viewmodels
+
+<PageTitle>Neues Objekt · Blackshield</PageTitle>
+
+<MudStack Spacing="5">
+<MudBreadcrumbs Items="breadcrumbs" Class="pa-0" Separator=">"/>
+
+<MudStack Spacing="1">
+    <MudText Typo="Typo.h4" Class="blackshield-page-title">Neues Objekt anlegen</MudText>
+    <MudText Typo="Typo.body1" Color="Color.Tertiary">
+        Lege ein Mietobjekt an und gib die Eckdaten ein. Die
+        Felder können später bearbeitet werden.
+    </MudText>
+</MudStack>
+
+<MudGrid Spacing="4">
+    <MudItem xs="12" md="8">
+        <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
+            <MudStack Spacing="5">
+                <div>
+                    <MudText Typo="Typo.h6" Class="mb-3">Eckdaten</MudText>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="12">
+                            <MudTextField T="string" Label="Bezeichnung"
+                                          @bind-Value="Viewmodel.BezeichnungWirtschaftseinheit"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"
+                                          Placeholder="z. B. Appartmentkomplex Hamburg Mitte"/>
+                        </MudItem>
+                        <MudItem xs="12">
+                            <MudTextField T="string" Label="Bezeichnung Nutzungseinheit"
+                                          @bind-Value="Viewmodel.BezeichnungNutzungseinheit"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"
+                                          Placeholder="z. B. 3-Zimmer Altbau · St.Pauli"/>
+                        </MudItem>
+                        <MudItem xs="12" md="8">
+                            <MudTextField T="string" Label="Straße" @bind-Value="Viewmodel.Straße"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="2">
+                            <MudTextField T="string" Label="HausNr." @bind-Value="Viewmodel.Hausnummer"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="2">
+                            <MudTextField T="string" Label="PLZ" @bind-Value="Viewmodel.PLZ"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="2">
+                            <MudTextField T="string" Label="Ort" @bind-Value="Viewmodel.Ort"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+
+                <div>
+                    <MudText Typo="Typo.h6" Class="mb-3">Objektdaten</MudText>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="int" Label="Zimmer" @bind-Value="Viewmodel.AnzahlZimmer"
+                                             Variant="Variant.Outlined" Margin="Margin.Dense" Min="1"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="decimal" Label="Wohnfläche (m²)"
+                                             @bind-Value="Viewmodel.Wohnfläche" Variant="Variant.Outlined"
+                                             Margin="Margin.Dense" Min="1"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudTextField T="string" Label="Etage" @bind-Value="Viewmodel.Etage"
+                                          Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudSelect T="Wohnungstyp" Label="Typ" @bind-Value="Viewmodel.Typ"
+                                       Variant="Variant.Outlined" Margin="Margin.Dense">
+                                <MudSelectItem
+                                    Value="@(Wohnungstyp.Wohnung)">
+                                    @Wohnungstyp.Wohnung.ToString()
+                                </MudSelectItem>
+                                <MudSelectItem
+                                    Value="@(Wohnungstyp.Haus)">
+                                    @Wohnungstyp.Haus.ToString()
+                                </MudSelectItem>
+                                @* <MudSelectItem Value="@("Apartment")">Apartment</MudSelectItem> *@
+                                @* <MudSelectItem Value="@("Loft")">Loft</MudSelectItem> *@
+                            </MudSelect>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+
+                <div>
+                    <MudText Typo="Typo.h6" Class="mb-3">Konditionen</MudText>
+                    <MudGrid Spacing="3">
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="decimal" Label="Kaltmiete (€)"
+                                             @bind-Value="Viewmodel.Kaltmiete" Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="decimal" Label="Nebenkosten (€)"
+                                             @bind-Value="Viewmodel.Nebenkosten" Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="decimal" Label="Heizkosten (€)"
+                                             @bind-Value="Viewmodel.Heizkosten" Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="6" md="3">
+                            <MudNumericField T="decimal" Label="Kaution (Monate)"
+                                             @bind-Value="Viewmodel.Kaution" Variant="Variant.Outlined"
+                                             Margin="Margin.Dense"/>
+                        </MudItem>
+                        <MudItem xs="12" md="6">
+                            <MudDatePicker Label="Frühester Einzug" @bind-Value="Viewmodel.FrühesterEinzugAb"
+                                           Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                        </MudItem>
+                    </MudGrid>
+                </div>
+
+                <div>
+                    <MudText Typo="Typo.h6" Class="mb-3">Beschreibung</MudText>
+                    <MudTextField T="string"
+                                  Label="Beschreibungstext"
+                                  @bind-Value="Viewmodel.Beschreibung"
+                                  Lines="6"
+                                  Variant="Variant.Outlined"
+                                  Placeholder="Charmante Wohnung mit … "/>
+                </div>
+
+                <div>
+                    <MudText Typo="Typo.h6" Class="mb-3">Bilder &amp; Dokumente</MudText>
+                    <MudPaper Outlined="true" Class="pa-6 blackshield-empty-state"
+                              Style="border-radius: 12px; text-align: center;">
+                        <MudIcon Icon="@Icons.Material.Outlined.CloudUpload" Size="Size.Large"
+                                 Color="Color.Tertiary"/>
+                        <MudText Typo="Typo.body2" Class="mt-2">
+                            Dateien hierher ziehen oder klicken zum
+                            Auswählen
+                        </MudText>
+                        <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                            JPG, PNG, PDF · max. 25 MB pro
+                            Datei
+                        </MudText>
+                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-3"
+                                   StartIcon="@Icons.Material.Filled.Add">
+                            Dateien auswählen
+                        </MudButton>
+                    </MudPaper>
+                </div>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+
+    <MudItem xs="12" md="4">
+        <MudPaper Elevation="0" Outlined="true" Class="pa-5 sticky-side" Style="border-radius: 16px;">
+            <MudStack Spacing="3">
+                <MudText Typo="Typo.h6">Veröffentlichung</MudText>
+                <MudRadioGroup T="string" Value="@_visibility"
+                               ValueChanged="@((string v) => _visibility = v)">
+                    <MudRadio T="string" Value="@("entwurf")" Color="Color.Primary">
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">
+                                Als Entwurf speichern
+                            </MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                Nicht öffentlich
+                                sichtbar
+                            </MudText>
+                        </MudStack>
+                    </MudRadio>
+                    <MudRadio T="string" Value="@("intern")" Color="Color.Primary">
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">
+                                Nur via Einladung
+                            </MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                Interessenten erhalten
+                                persönlichen Link
+                            </MudText>
+                        </MudStack>
+                    </MudRadio>
+                    <MudRadio T="string" Value="@("oeffentlich")" Color="Color.Primary">
+                        <MudStack Spacing="0">
+                            <MudText Typo="Typo.body2" Style="font-weight: 600;">Öffentlich</MudText>
+                            <MudText Typo="Typo.caption" Color="Color.Tertiary">
+                                Auch auf gekoppelten
+                                Portalen sichtbar
+                            </MudText>
+                        </MudStack>
+                    </MudRadio>
+                </MudRadioGroup>
+
+                <MudDivider/>
+
+                <MudText Typo="Typo.h6">Vorgaben für Interessenten</MudText>
+                <MudSwitch T="bool" Color="Color.Primary" Label="Selbstauskunft Pflicht"/>
+                <MudSwitch T="bool" Color="Color.Primary" Label="Bonitätsnachweis anfordern"/>
+                <MudSwitch T="bool" Color="Color.Primary" Label="Mieterselbstauskunft + DSGVO"/>
+
+                <MudDivider/>
+
+                <MudStack Spacing="2">
+                    <MudButton Variant="Variant.Filled" OnClick="SaveObjektAsync" Color="Color.Primary"
+                               FullWidth="true" Size="Size.Large" StartIcon="@Icons.Material.Filled.Save">
+                        Objekt speichern
+                    </MudButton>
+                    <MudButton Variant="Variant.Outlined" Color="Color.Default" FullWidth="true"
+                               Href="/objekte">
+                        Abbrechen
+                    </MudButton>
+                </MudStack>
+            </MudStack>
+        </MudPaper>
+    </MudItem>
+</MudGrid>
+</MudStack>
+
+@code {
+    public  string                        Id        { get; set; }
+    public  WohnobjektBearbeitenViewmodel Viewmodel { get; set; } = new();
+    private string                        _visibility = "intern";
+    private readonly List<BreadcrumbItem> breadcrumbs =
+    [
+        new BreadcrumbItem("Objekte", "/objekte")
+    ];
+
+    protected override Task OnParametersSetAsync()
+    {
+        //Todo load by parameter
+    }
+
+    private async Task SaveObjektAsync() { }
+
+}
