@@ -27,7 +27,7 @@ public class WohnobjektService
 
     public Wirtschaftseinheit[] LoadAllWirtschaftseinheiten() => dbContext.Wirtschaftseinheiten.ToArray();
 
-    public Nutzungseinheit[] LoadAllNutzungseinheiten() => dbContext.Nutzungseinheiten.ToArray();
+    public Task<Nutzungseinheit[]> LoadAllNutzungseinheitenAsync() => dbContext.Nutzungseinheiten.ToArrayAsync();
 
     private async Task<Wirtschaftseinheit> FindOrCreateWirtschaftseinheit(NeuesWohnobjektViewmodel model)
     {

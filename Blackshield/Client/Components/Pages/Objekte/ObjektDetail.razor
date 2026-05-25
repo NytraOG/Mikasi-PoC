@@ -15,34 +15,34 @@
         <MudItem xs="12" md="9">
             <MudStack Spacing="2">
                 <MudStack Row="true" Spacing="2" AlignItems="AlignItems.Center">
-                    <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled">Aktiv</MudChip>
-                    <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Seit 14 Tagen</MudChip>
+                    <MudChip T="string" Color="Color.Success" Size="Size.Small" Variant="Variant.Filled">@Nutzungseinheit.Status</MudChip>
+                    <MudChip T="string" Color="Color.Default" Size="Size.Small" Variant="Variant.Outlined">Seit 14 Tagen HARDCODED</MudChip>
                 </MudStack>
-                <MudText Typo="Typo.h4" Class="blackshield-page-title">3-Zimmer Altbau · Neukölln</MudText>
+                <MudText Typo="Typo.h4" Class="blackshield-page-title">@Nutzungseinheit.Bezeichnung</MudText>
                 <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                     <MudIcon Icon="@Icons.Material.Outlined.LocationOn" Color="Color.Tertiary" Size="Size.Small"/>
-                    <MudText Typo="Typo.body1" Color="Color.Tertiary">Sonnenallee 142, 12059 Berlin</MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Tertiary">@Nutzungseinheit.GetFullAddress()</MudText>
                 </MudStack>
                 <MudStack Row="true" Spacing="4" Class="mt-2 flex-wrap">
                     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Outlined.Euro" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>1.320 €</b> / Monat</MudText>
+                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Kaltmiete.Betrag.ToString("C0") €</b> / Monat</MudText>
                     </MudStack>
                     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Outlined.SquareFoot" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>78 m²</b></MudText>
+                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Wohnfläche m²</b></MudText>
                     </MudStack>
                     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Outlined.Bed" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>3 Zimmer</b></MudText>
+                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.AnzahlZimmer Zimmer</b></MudText>
                     </MudStack>
                     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Outlined.Stairs" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>3. OG</b></MudText>
+                        <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Etage?.Bezeichnung</b></MudText>
                     </MudStack>
                     <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                         <MudIcon Icon="@Icons.Material.Outlined.People" Color="Color.Primary" Size="Size.Small"/>
-                        <MudText Typo="Typo.subtitle2"><b>14 Interessenten</b></MudText>
+                        <MudText Typo="Typo.subtitle2"><b>14 Interessenten HARDCODED</b></MudText>
                     </MudStack>
                 </MudStack>
             </MudStack>
@@ -184,9 +184,9 @@
 @code {
 
     [Parameter]
-    public string Id { get; set; }
+    public string Id { get; set; } = string.Empty;
 
-    public Nutzungseinheit Nutzungseinheit { get; set; }
+    public required Nutzungseinheit Nutzungseinheit { get; set; }
 
     protected override async Task OnParametersSetAsync()
     {
