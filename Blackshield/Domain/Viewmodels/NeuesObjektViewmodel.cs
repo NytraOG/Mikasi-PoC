@@ -18,6 +18,7 @@ public record NeuesWohnobjektViewmodel
     public string?     PLZ                           { get; set; }
     public string?     Straße                        { get; set; }
     public Wohnungstyp Typ                           { get; set; }
+    public Mietstatus  Status                        { get; set; }
     public decimal     Wohnfläche                    { get; set; }
     public string?     Beschreibung                  { get; set; }
 }

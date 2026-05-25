@@ -23,6 +23,12 @@ public class WohnobjektService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task<Nutzungseinheit> LoadNutzungseinheitByIdAsync(Guid id) => await dbContext.Nutzungseinheiten.FirstOrDefaultAsync(ne => ne.Id == id);
+
+    public Wirtschaftseinheit[] LoadAllWirtschaftseinheiten() => dbContext.Wirtschaftseinheiten.ToArray();
+
+    public Nutzungseinheit[] LoadAllNutzungseinheiten() => dbContext.Nutzungseinheiten.ToArray();
+
     private async Task<Wirtschaftseinheit> FindOrCreateWirtschaftseinheit(NeuesWohnobjektViewmodel model)
     {
         var wirtschaftseinheit = await dbContext.Wirtschaftseinheiten

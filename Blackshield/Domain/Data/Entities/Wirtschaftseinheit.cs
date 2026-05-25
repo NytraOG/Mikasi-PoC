@@ -13,4 +13,6 @@ public class Wirtschaftseinheit : BaseEntity
     public           IReadOnlyCollection<Etage> Etagen      => etagen;
 
     public void AddEtage(Etage etage) => etagen.Add(etage);
+
+    public string GetFullAddress() => $"{Straße.Trim()} {Hausnummer.Trim()}, {PLZ.Trim()} {Ort.Trim()}".Trim();
 }

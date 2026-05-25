@@ -1,4 +1,6 @@
 @page "/objekte/{Id}"
+@using Domain.Data.Entities
+@using Domain.Services
 
 <PageTitle>Objekt · Blackshield</PageTitle>
 
@@ -177,10 +179,22 @@
     </MudPaper>
 </MudStack>
 
+@inject WohnobjektService     Service;
+
 @code {
 
     [Parameter]
-    public string Id { get; set; } = "";
+    public string Id { get; set; }
+
+    public Nutzungseinheit Nutzungseinheit { get; set; }
+
+    protected override async Task OnParametersSetAsync()
+    {
+        var id = Guid.Parse(Id);
+        Nutzungseinheit = await Service.LoadNutzungseinheitByIdAsync(id);
+
+        await base.OnParametersSetAsync();
+    }
 
     private List<BreadcrumbItem> _breadcrumbs = new()
     {
