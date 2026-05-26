@@ -1,12 +1,16 @@
 ﻿@page "/objekte/bearbeiten/{Id}"
+@using System.Globalization
+@using Domain.Data.Entities
 @using Domain.Data.Enums
 @using Domain.Extensions
 @using Domain.Services
 @using Domain.Viewmodels
+@using Newtonsoft.Json
 
 <PageTitle>Neues Objekt · Blackshield</PageTitle>
 
 <MudStack Spacing="5">
+<NavigationLock OnBeforeInternalNavigation="OnBeforeNavigation" ConfirmExternalNavigation="IsDirty"></NavigationLock>
 <MudBreadcrumbs Items="breadcrumbs" Class="pa-0" Separator=">"/>
 
 <MudStack Spacing="1">
@@ -15,8 +19,18 @@
         Bearbeite ein Mietobjekt und passe die Eckdaten an.
     </MudText>
 </MudStack>
-
-<MudGrid Spacing="4">
+@if (Viewmodel is null)
+{
+    <MudStack AlignItems="AlignItems.Center" Class="pa-8">
+        <MudProgressCircular Indeterminate="true"
+                             Color="Color.Primary"
+                             Size="Size.Large"/>
+        <MudText Typo="Typo.body2" Color="Color.Tertiary">Lade Objekt…</MudText>
+    </MudStack>
+}
+else
+{
+    <MudGrid Spacing="4">
     <MudItem xs="12" md="8">
         <MudPaper Elevation="0" Outlined="true" Class="pa-5" Style="border-radius: 16px;">
             <MudStack Spacing="5">
@@ -93,21 +107,25 @@
                     <MudGrid Spacing="3">
                         <MudItem xs="6" md="3">
                             <MudNumericField T="decimal" Label="Kaltmiete (€)"
+                                             Culture="@CultureInfo.InvariantCulture"
                                              @bind-Value="Viewmodel.Kaltmiete" Variant="Variant.Outlined"
                                              Margin="Margin.Dense"/>
                         </MudItem>
                         <MudItem xs="6" md="3">
                             <MudNumericField T="decimal" Label="Nebenkosten (€)"
+                                             Culture="@CultureInfo.InvariantCulture"
                                              @bind-Value="Viewmodel.Nebenkosten" Variant="Variant.Outlined"
                                              Margin="Margin.Dense"/>
                         </MudItem>
                         <MudItem xs="6" md="3">
                             <MudNumericField T="decimal" Label="Heizkosten (€)"
+                                             Culture="@CultureInfo.InvariantCulture"
                                              @bind-Value="Viewmodel.Heizkosten" Variant="Variant.Outlined"
                                              Margin="Margin.Dense"/>
                         </MudItem>
                         <MudItem xs="6" md="3">
-                            <MudNumericField T="decimal" Label="Kaution (Monate)"
+                            <MudNumericField T="decimal" Label="Kaution (€)"
+                                             Culture="@CultureInfo.InvariantCulture"
                                              @bind-Value="Viewmodel.Kaution" Variant="Variant.Outlined"
                                              Margin="Margin.Dense"/>
                         </MudItem>
@@ -213,37 +231,51 @@
             </MudStack>
         </MudPaper>
     </MudItem>
-</MudGrid>
+    </MudGrid>
+}
 </MudStack>
 @attribute [StreamRendering]
 @inject WohnobjektService     Service;
 @inject ISnackbar             Snackbar
 @inject NavigationManager     Navigation;
+@inject IDialogService        DialogService
 
 @code {
 
     [Parameter]
     public required string Id { get; set; }
 
-    private          string               visibility = "intern";
-    public required  WohnobjektViewmodel  Viewmodel { get; set; } = new();
+    private          string               visibility  = "intern";
     private readonly List<BreadcrumbItem> breadcrumbs = [new BreadcrumbItem("Objekte", "/objekte")];
 
-    protected override async Task OnParametersSetAsync()
+    public WohnobjektViewmodel? Viewmodel  { get; set; }
+    public string               CleanState { get; set; } = string.Empty;
+
+    public bool IsDirty => Viewmodel is not null &&
+                           JsonConvert.SerializeObject(Viewmodel) != CleanState;
+
+    protected override async Task OnInitializedAsync()
     {
         try
         {
             var nutzungseinheitId = Guid.Parse(Id);
             var nutzungseinheit   = await Service.LoadNutzungseinheitByIdAsync(nutzungseinheitId);
-            breadcrumbs.Add(new BreadcrumbItem(nutzungseinheit?.GetFullAddress() ?? "N/A", $"/objekte/{Id}"));
-            breadcrumbs.Add(new BreadcrumbItem("Bearbeitung", null, true));
 
-            Viewmodel = nutzungseinheit!.ToViewmodel();
+            InitBreadcrumbs(nutzungseinheit);
+
+            Viewmodel  = nutzungseinheit!.ToViewmodel();
+            CleanState = JsonConvert.SerializeObject(Viewmodel);
         }
         catch (Exception e)
         {
             RaiseErrorToast(e.Message);
         }
+    }
+
+    private void InitBreadcrumbs(Nutzungseinheit? nutzungseinheit)
+    {
+        breadcrumbs.Add(new BreadcrumbItem(nutzungseinheit?.GetFullAddress() ?? "N/A", $"/objekte/{Id}"));
+        breadcrumbs.Add(new BreadcrumbItem("Bearbeitung", null, true));
     }
 
     private void RaiseErrorToast(string message)
@@ -269,9 +301,11 @@
     {
         try
         {
-            await Service.UpdateWohnobjectAsync(Viewmodel);
+            await Service.UpdateWohnobjectAsync(Viewmodel!);
 
             RaiseSuccessToast("Objekt erfolgreich bearbeitet.");
+
+            CleanState = JsonConvert.SerializeObject(Viewmodel);
 
             Navigation.NavigateTo($"/objekte/{Id}");
         }
@@ -279,6 +313,20 @@
         {
             RaiseErrorToast(e.Message);
         }
+    }
+
+    private async Task OnBeforeNavigation(LocationChangingContext context)
+    {
+        if(!IsDirty)
+            return;
+
+        var contextVerlassen = await DialogService.ShowMessageBoxAsync(title: "Ungespeicherte Änderungen",
+                                                                       message: "Du hast Änderungen, die noch nicht gespeichert wurden. Seite wirklich verlassen?",
+                                                                       yesText: "Verlassen",
+                                                                       cancelText: "Abbrechen");
+
+        if(contextVerlassen is null || !contextVerlassen.Value)
+            context.PreventNavigation();
     }
 
 }
