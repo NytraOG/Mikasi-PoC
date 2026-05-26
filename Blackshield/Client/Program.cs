@@ -1,5 +1,5 @@
+using Blackshield.Auth;
 using Blackshield.Components;
-using Blackshield.Components.Account;
 using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
 using Domain.Data.Interceptors;
@@ -18,7 +18,6 @@ builder.Services.AddRazorComponents()
 builder.Services.AddMudServices();
 
 builder.Services.AddCascadingAuthenticationState();
-builder.Services.AddScoped<IdentityRedirectManager>();
 builder.Services.AddScoped<AuthenticationStateProvider, IdentityRevalidatingAuthenticationStateProvider>();
 
 builder.Services.AddAuthentication(options =>
@@ -62,8 +61,6 @@ builder.Services.AddIdentityCore<ApplicationUser>(options =>
        .AddSignInManager()
        .AddDefaultTokenProviders();
 
-builder.Services.AddSingleton<IEmailSender<ApplicationUser>, IdentityNoOpEmailSender>();
-
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -89,7 +86,6 @@ app.MapStaticAssets();
 app.MapRazorComponents<App>()
    .AddInteractiveServerRenderMode();
 
-// Add additional endpoints required by the Identity /Account Razor components.
-app.MapAdditionalIdentityEndpoints();
+app.MapAuthEndpoints();
 
 app.Run();

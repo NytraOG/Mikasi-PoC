@@ -22,7 +22,10 @@
                       Style="max-width: 460px; flex: 1;"/>
 
         <MudSpacer/>
-
+        <form method="post" action="/auth/logout">
+            <AntiforgeryToken/>
+            <button type="submit">Abmelden</button>
+        </form>
         <MudTooltip Text="Theme umschalten">
             <MudIconButton Icon="@(_isDarkMode ? Icons.Material.Outlined.LightMode : Icons.Material.Outlined.DarkMode)"
                            Color="Color.Default"

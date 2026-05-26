@@ -88,22 +88,42 @@
                     <span>oder mit E-Mail</span>
                 </div>
 
-                <MudStack Spacing="3">
-                    <MudTextField T="string"
-                                  Label="E-Mail-Adresse"
-                                  Placeholder="@("anna@beispiel.de")"
-                                  Variant="Variant.Outlined"
-                                  Adornment="Adornment.Start"
-                                  AdornmentIcon="@Icons.Material.Outlined.MailOutline"
-                                  InputType="InputType.Email"/>
-                    <MudButton FullWidth="true"
-                               Size="Size.Large"
-                               Variant="Variant.Filled"
-                               Color="Color.Primary"
-                               EndIcon="@Icons.Material.Filled.ArrowForward">
-                        Magic-Link senden
-                    </MudButton>
-                </MudStack>
+                <form method="post" action="/auth/login">
+                    <AntiforgeryToken/>
+                    <input type="hidden" name="returnUrl" value="@ReturnUrl"/>
+
+                    <MudStack Spacing="3">
+                        @if (ErrorText is not null)
+                        {
+                            <MudAlert Severity="Severity.Error" Variant="Variant.Outlined" Dense="true">@ErrorText</MudAlert>
+                        }
+
+                        <input name="identifier" type="text" required autocomplete="username"
+                               placeholder="E-Mail oder Accountname"
+                               style="width:100%; padding:14px 16px; border-radius:8px; font-size:1rem;
+                                      border:1px solid var(--mud-palette-lines-inputs);
+                                      background:var(--mud-palette-surface); color:var(--mud-palette-text-primary);"/>
+
+                        <input name="password" type="password" required autocomplete="current-password"
+                               placeholder="Passwort"
+                               style="width:100%; padding:14px 16px; border-radius:8px; font-size:1rem;
+                                      border:1px solid var(--mud-palette-lines-inputs);
+                                      background:var(--mud-palette-surface); color:var(--mud-palette-text-primary);"/>
+
+                        <label style="display:flex; align-items:center; gap:8px;
+                                      color:var(--mud-palette-text-secondary); font-size:0.875rem;">
+                            <input name="rememberMe" type="checkbox" value="true"/>
+                            <span>Angemeldet bleiben</span>
+                        </label>
+
+                        <button type="submit"
+                                style="width:100%; padding:14px 16px; border:none; border-radius:8px;
+                                       font-size:1rem; font-weight:600; cursor:pointer;
+                                       background:var(--mud-palette-primary); color:var(--mud-palette-primary-text);">
+                            Anmelden
+                        </button>
+                    </MudStack>
+                </form>
 
                 <MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">
                     Mit der Anmeldung akzeptierst du die
@@ -136,6 +156,17 @@
 </div>
 
 @code {
+    [SupplyParameterFromQuery] private string? Error     { get; set; }
+    [SupplyParameterFromQuery] private string? ReturnUrl { get; set; }
+
+    private string? ErrorText => Error switch
+    {
+        "invalid"    => "E-Mail/Accountname oder Passwort ist falsch.",
+        "lockout"    => "Konto vorübergehend gesperrt. Bitte später erneut versuchen.",
+        "notallowed" => "Anmeldung nicht möglich (Konto nicht freigegeben).",
+        _            => null
+    };
+
     private record HeroFeature(string Title, string Description);
 
     private static readonly HeroFeature[] HeroFeatures =

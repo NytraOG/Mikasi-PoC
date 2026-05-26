@@ -1,0 +1,257 @@
+@page "/auth/registrieren"
+@layout EmptyLayout
+@attribute [AllowAnonymous]
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Identity
+@using Domain.Data.Entities.Security
+
+@inject UserManager<ApplicationUser> UserManager
+@inject NavigationManager             Navigation
+@inject ISnackbar                     Snackbar
+
+<PageTitle>Konto erstellen · Blackshield</PageTitle>
+
+<div class="auth-shell">
+
+    <div class="auth-hero blackshield-auth-hero">
+        <div class="auth-hero-inner">
+            <div class="auth-brand">
+                <div class="auth-brand-mark">
+                    <MudIcon Icon="@Icons.Material.Filled.Shield" Size="Size.Medium" Style="color:white;"/>
+                </div>
+                <MudText Typo="Typo.h5" Class="blackshield-brand" Style="color: white;">Blackshield</MudText>
+            </div>
+
+            <MudStack Spacing="4" Class="auth-hero-content">
+                <MudText Typo="Typo.h3" Style="color: white; font-weight: 700; line-height: 1.15;">
+                    In 2 Minuten<br/>startklar.
+                </MudText>
+                <MudText Typo="Typo.body1" Style="color: rgba(255,255,255,0.75); max-width: 440px;">
+                    Lege dein Konto an und verwalte deine erste Vermietung noch heute —
+                    Objektanlage, Selbstauskunft und Mietvertrag in einem Workflow.
+                </MudText>
+
+                <MudStack Spacing="3" Class="mt-4">
+                    @foreach (var f in HeroFeatures)
+                    {
+                        <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Start">
+                            <div class="auth-feature-check">
+                                <MudIcon Icon="@Icons.Material.Filled.Check" Size="Size.Small" Style="color: #34D399;"/>
+                            </div>
+                            <MudStack Spacing="0">
+                                <MudText Typo="Typo.subtitle2" Style="color: white; font-weight: 600;">@f.Title</MudText>
+                                <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.6);">@f.Description</MudText>
+                            </MudStack>
+                        </MudStack>
+                    }
+                </MudStack>
+            </MudStack>
+
+            <div class="auth-hero-quote">
+                <MudText Typo="Typo.body2" Style="color: rgba(255,255,255,0.85); font-style: italic;">
+                    „Wir vermieten 28 Wohnungen über Blackshield. Selbstauskünfte landen sortiert im Postfach —
+                    wir schaffen es jetzt in der Hälfte der Zeit."
+                </MudText>
+                <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center" Class="mt-3">
+                    <MudAvatar Size="Size.Small" Color="Color.Secondary">JH</MudAvatar>
+                    <MudStack Spacing="0">
+                        <MudText Typo="Typo.caption" Style="color: white; font-weight: 600;">Julia Hoffmann</MudText>
+                        <MudText Typo="Typo.caption" Style="color: rgba(255,255,255,0.55); font-size: 0.7rem;">Geschäftsführung, Hoffmann Immobilien</MudText>
+                    </MudStack>
+                </MudStack>
+            </div>
+        </div>
+    </div>
+
+    <div class="auth-form-side">
+        <div class="auth-form-inner">
+
+            <MudStack Spacing="6">
+                <MudStack Spacing="1">
+                    <MudText Typo="Typo.h4" Class="blackshield-page-title">Konto erstellen</MudText>
+                    <MudText Typo="Typo.body1" Color="Color.Tertiary">14 Tage kostenlos testen — keine Kreditkarte nötig.</MudText>
+                </MudStack>
+
+                <MudStack Spacing="3">
+                    <MudButton FullWidth="true" Size="Size.Large" Variant="Variant.Outlined" Color="Color.Default"
+                               StartIcon="@Icons.Custom.Brands.Google" Class="auth-oauth-btn"
+                               OnClick="@(() => ExternalLogin("Google"))">
+                        Mit Google fortfahren
+                    </MudButton>
+                    <MudButton FullWidth="true" Size="Size.Large" Variant="Variant.Outlined" Color="Color.Default"
+                               StartIcon="@Icons.Custom.Brands.Apple" Class="auth-oauth-btn"
+                               OnClick="@(() => ExternalLogin("Apple"))">
+                        Mit Apple fortfahren
+                    </MudButton>
+                    <MudButton FullWidth="true" Size="Size.Large" Variant="Variant.Outlined" Color="Color.Default"
+                               StartIcon="@Icons.Custom.Brands.Microsoft" Class="auth-oauth-btn"
+                               OnClick="@(() => ExternalLogin("Microsoft"))">
+                        Mit Microsoft fortfahren
+                    </MudButton>
+                </MudStack>
+
+                <div class="auth-divider">
+                    <span>oder mit E-Mail</span>
+                </div>
+
+                <MudForm @ref="_form">
+                    <MudStack Spacing="3">
+                        <MudTextField @bind-Value="_model.UserName"
+                                      Label="Accountname"
+                                      Placeholder="anna.hoffmann"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Outlined.PersonOutline"
+                                      Required="true"
+                                      RequiredError="Bitte einen Accountnamen angeben."/>
+
+                        <MudTextField @bind-Value="_model.Email"
+                                      Label="E-Mail-Adresse"
+                                      Placeholder="@("anna@beispiel.de")"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Outlined.MailOutline"
+                                      InputType="InputType.Email"
+                                      Required="true"
+                                      RequiredError="Bitte eine E-Mail-Adresse angeben."
+                                      Validation="@(new Func<string, string?>(ValidateEmail))"/>
+
+                        <MudTextField @bind-Value="_model.Password"
+                                      Label="Passwort"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.End"
+                                      AdornmentIcon="@PasswordIcon"
+                                      OnAdornmentClick="TogglePassword"
+                                      InputType="@PasswordInput"
+                                      Required="true"
+                                      RequiredError="Bitte ein Passwort angeben."
+                                      Validation="@(new Func<string, string?>(ValidatePassword))"/>
+
+                        <MudTextField @bind-Value="_model.ConfirmPassword"
+                                      Label="Passwort bestätigen"
+                                      Variant="Variant.Outlined"
+                                      Adornment="Adornment.Start"
+                                      AdornmentIcon="@Icons.Material.Outlined.Lock"
+                                      InputType="@PasswordInput"
+                                      Required="true"
+                                      RequiredError="Bitte das Passwort wiederholen."
+                                      Validation="@(new Func<string, string?>(ValidateConfirm))"/>
+
+                        <MudButton FullWidth="true"
+                                   Size="Size.Large"
+                                   Variant="Variant.Filled"
+                                   Color="Color.Primary"
+                                   EndIcon="@Icons.Material.Filled.ArrowForward"
+                                   Disabled="_busy"
+                                   OnClick="RegisterAsync">
+                            @(_busy ? "Wird erstellt…" : "Konto erstellen")
+                        </MudButton>
+                    </MudStack>
+                </MudForm>
+
+                <MudText Typo="Typo.caption" Color="Color.Tertiary" Align="Align.Center">
+                    Mit der Registrierung akzeptierst du die
+                    <MudLink Href="#" Underline="Underline.Always" Color="Color.Tertiary">Nutzungsbedingungen</MudLink>
+                    und die
+                    <MudLink Href="#" Underline="Underline.Always" Color="Color.Tertiary">Datenschutzerklärung</MudLink>.
+                </MudText>
+
+                <MudDivider/>
+
+                <MudStack Row="true" Spacing="1" Justify="Justify.Center">
+                    <MudText Typo="Typo.body2" Color="Color.Tertiary">Schon ein Konto?</MudText>
+                    <MudLink Href="/auth/login" Color="Color.Primary" Underline="Underline.None" Typo="Typo.body2" Style="font-weight: 600;">
+                        Jetzt anmelden
+                    </MudLink>
+                </MudStack>
+            </MudStack>
+
+            <div class="auth-footer">
+                <MudStack Row="true" Spacing="3" Justify="Justify.Center" AlignItems="AlignItems.Center">
+                    <MudText Typo="Typo.caption" Color="Color.Tertiary">© 2026 Blackshield UG</MudText>
+                    <span class="auth-footer-dot">·</span>
+                    <MudLink Href="#" Typo="Typo.caption" Underline="Underline.None" Color="Color.Tertiary">Impressum</MudLink>
+                    <span class="auth-footer-dot">·</span>
+                    <MudLink Href="#" Typo="Typo.caption" Underline="Underline.None" Color="Color.Tertiary">Hilfe</MudLink>
+                </MudStack>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    private MudForm       _form = default!;
+    private bool          _busy;
+    private bool          _showPassword;
+    private readonly RegisterModel _model = new();
+
+    private InputType PasswordInput => _showPassword ? InputType.Text : InputType.Password;
+    private string    PasswordIcon  => _showPassword ? Icons.Material.Filled.VisibilityOff : Icons.Material.Filled.Visibility;
+
+    private void TogglePassword() => _showPassword = !_showPassword;
+
+    private async Task RegisterAsync()
+    {
+        await _form.Validate();
+        if (!_form.IsValid)
+            return;
+
+        _busy = true;
+        try
+        {
+            var user = new ApplicationUser
+            {
+                UserName       = _model.UserName,
+                Email          = _model.Email,
+                EmailConfirmed = true // PoC: Auto-Confirm – ohne Mailversand sofort anmeldbar
+            };
+            var result = await UserManager.CreateAsync(user, _model.Password!);
+
+            if (result.Succeeded)
+            {
+                Snackbar.Add("Konto erstellt. Du kannst dich jetzt anmelden.", Severity.Success);
+                Navigation.NavigateTo("/auth/login");
+                return;
+            }
+
+            foreach (var error in result.Errors)
+                Snackbar.Add(error.Description, Severity.Error);
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    // TODO: Google/Apple/Microsoft sind noch nicht als OAuth-Provider konfiguriert
+    // (AddGoogle/AddMicrosoftAccount/AddApple + Challenge-/Callback-Endpoint fehlen).
+    private void ExternalLogin(string provider)
+        => Snackbar.Add($"{provider}-Login ist noch nicht eingerichtet.", Severity.Info);
+
+    private static string? ValidateEmail(string value)
+        => string.IsNullOrWhiteSpace(value) || value.Contains('@') ? null : "Keine gültige E-Mail-Adresse.";
+
+    private static string? ValidatePassword(string value)
+        => string.IsNullOrEmpty(value) || value.Length >= 6 ? null : "Mindestens 6 Zeichen.";
+
+    private string? ValidateConfirm(string value)
+        => value == _model.Password ? null : "Passwörter stimmen nicht überein.";
+
+    private sealed class RegisterModel
+    {
+        public string? UserName        { get; set; }
+        public string? Email           { get; set; }
+        public string? Password        { get; set; }
+        public string? ConfirmPassword { get; set; }
+    }
+
+    private record HeroFeature(string Title, string Description);
+
+    private static readonly HeroFeature[] HeroFeatures =
+    {
+        new("Digitale Selbstauskunft",  "Personalisierte Links, DSGVO-konform, keine Registrierung für Interessenten."),
+        new("Smarte Termin-Pipeline",   "Besichtigungen, Erinnerungen und Status auf einen Blick."),
+        new("Automatische Marktdaten",  "Sieh in Echtzeit, wie deine Mieten im lokalen Markt einzuordnen sind."),
+        new("E-Signatur inklusive",     "Vom Vertrag zum digital unterschriebenen PDF – ohne Medienbruch."),
+    };
+}
