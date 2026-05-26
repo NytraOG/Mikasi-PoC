@@ -1,5 +1,7 @@
 ﻿@page "/objekte/bearbeiten/{Id}"
 @using Domain.Data.Enums
+@using Domain.Extensions
+@using Domain.Services
 @using Domain.Viewmodels
 
 <PageTitle>Neues Objekt · Blackshield</PageTitle>
@@ -8,10 +10,9 @@
 <MudBreadcrumbs Items="breadcrumbs" Class="pa-0" Separator=">"/>
 
 <MudStack Spacing="1">
-    <MudText Typo="Typo.h4" Class="blackshield-page-title">Neues Objekt anlegen</MudText>
+    <MudText Typo="Typo.h4" Class="blackshield-page-title">Objekt bearbeiten</MudText>
     <MudText Typo="Typo.body1" Color="Color.Tertiary">
-        Lege ein Mietobjekt an und gib die Eckdaten ein. Die
-        Felder können später bearbeitet werden.
+        Bearbeite ein Mietobjekt und passe die Eckdaten an.
     </MudText>
 </MudStack>
 
@@ -155,8 +156,8 @@
         <MudPaper Elevation="0" Outlined="true" Class="pa-5 sticky-side" Style="border-radius: 16px;">
             <MudStack Spacing="3">
                 <MudText Typo="Typo.h6">Veröffentlichung</MudText>
-                <MudRadioGroup T="string" Value="@_visibility"
-                               ValueChanged="@((string v) => _visibility = v)">
+                <MudRadioGroup T="string" Value="@visibility"
+                               ValueChanged="@((string v) => visibility = v)">
                     <MudRadio T="string" Value="@("entwurf")" Color="Color.Primary">
                         <MudStack Spacing="0">
                             <MudText Typo="Typo.body2" Style="font-weight: 600;">
@@ -214,21 +215,70 @@
     </MudItem>
 </MudGrid>
 </MudStack>
+@attribute [StreamRendering]
+@inject WohnobjektService     Service;
+@inject ISnackbar             Snackbar
+@inject NavigationManager     Navigation;
 
 @code {
-    public  string                        Id        { get; set; }
-    public  WohnobjektBearbeitenViewmodel Viewmodel { get; set; } = new();
-    private string                        _visibility = "intern";
-    private readonly List<BreadcrumbItem> breadcrumbs =
-    [
-        new BreadcrumbItem("Objekte", "/objekte")
-    ];
 
-    protected override Task OnParametersSetAsync()
+    [Parameter]
+    public required string Id { get; set; }
+
+    private          string               visibility = "intern";
+    public required  WohnobjektViewmodel  Viewmodel { get; set; } = new();
+    private readonly List<BreadcrumbItem> breadcrumbs = [new BreadcrumbItem("Objekte", "/objekte")];
+
+    protected override async Task OnParametersSetAsync()
     {
-        //Todo load by parameter
+        try
+        {
+            var nutzungseinheitId = Guid.Parse(Id);
+            var nutzungseinheit   = await Service.LoadNutzungseinheitByIdAsync(nutzungseinheitId);
+            breadcrumbs.Add(new BreadcrumbItem(nutzungseinheit?.GetFullAddress() ?? "N/A", $"/objekte/{Id}"));
+            breadcrumbs.Add(new BreadcrumbItem("Bearbeitung", null, true));
+
+            Viewmodel = nutzungseinheit!.ToViewmodel();
+        }
+        catch (Exception e)
+        {
+            RaiseErrorToast(e.Message);
+        }
     }
 
-    private async Task SaveObjektAsync() { }
+    private void RaiseErrorToast(string message)
+    {
+        ArrangeSnackbar();
+        Snackbar.Add(message, Severity.Error);
+    }
+
+    private void ArrangeSnackbar()
+    {
+        Snackbar.Clear();
+        Snackbar.Configuration.PositionClass = Defaults.Classes.Position.BottomCenter;
+    }
+
+    private void RaiseSuccessToast(string message)
+    {
+        ArrangeSnackbar();
+
+        Snackbar.Add(message, Severity.Success);
+    }
+
+    private async Task SaveObjektAsync()
+    {
+        try
+        {
+            await Service.UpdateWohnobjectAsync(Viewmodel);
+
+            RaiseSuccessToast("Objekt erfolgreich bearbeitet.");
+
+            Navigation.NavigateTo($"/objekte/{Id}");
+        }
+        catch (Exception e)
+        {
+            RaiseErrorToast(e.Message);
+        }
+    }
 
 }

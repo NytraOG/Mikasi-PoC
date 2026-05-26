@@ -42,19 +42,27 @@
                         </MudStack>
                         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                             <MudIcon Icon="@Icons.Material.Outlined.SquareFoot" Color="Color.Primary" Size="Size.Small"/>
-                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Wohnfläche m²</b></MudText>
+                            <MudText Typo="Typo.subtitle2">
+                                <b>@Nutzungseinheit.Wohnfläche m²</b>
+                            </MudText>
                         </MudStack>
                         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                             <MudIcon Icon="@Icons.Material.Outlined.Bed" Color="Color.Primary" Size="Size.Small"/>
-                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.AnzahlZimmer Zimmer</b></MudText>
+                            <MudText Typo="Typo.subtitle2">
+                                <b>@Nutzungseinheit.AnzahlZimmer Zimmer</b>
+                            </MudText>
                         </MudStack>
                         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                             <MudIcon Icon="@Icons.Material.Outlined.Stairs" Color="Color.Primary" Size="Size.Small"/>
-                            <MudText Typo="Typo.subtitle2"><b>@Nutzungseinheit.Etage?.Bezeichnung</b></MudText>
+                            <MudText Typo="Typo.subtitle2">
+                                <b>@Nutzungseinheit.Etage?.Bezeichnung</b>
+                            </MudText>
                         </MudStack>
                         <MudStack Row="true" Spacing="1" AlignItems="AlignItems.Center">
                             <MudIcon Icon="@Icons.Material.Outlined.People" Color="Color.Primary" Size="Size.Small"/>
-                            <MudText Typo="Typo.subtitle2"><b>14 Interessenten HARDCODED</b></MudText>
+                            <MudText Typo="Typo.subtitle2">
+                                <b>14 Interessenten HARDCODED</b>
+                            </MudText>
                         </MudStack>
                     </MudStack>
                 </MudStack>
@@ -79,6 +87,7 @@
             </MudButton>
             <MudButton StartIcon="@Icons.Material.Filled.Edit"
                        Variant="Variant.Text"
+                       OnClick="BearbeitenClicked"
                        Color="Color.Default">
                 Bearbeiten
             </MudButton>
@@ -99,7 +108,8 @@
                                 <MudStack Spacing="4">
                                     <div>
                                         <MudText Typo="Typo.h6" Class="mb-2">Beschreibung</MudText>
-                                        <MudText Typo="Typo.body2" Color="Color.Tertiary">@Nutzungseinheit.Beschreibung
+                                        <MudText Typo="Typo.body2" Color="Color.Tertiary">
+                                            @Nutzungseinheit.Beschreibung
                                         </MudText>
                                     </div>
                                     <div>
@@ -176,7 +186,9 @@
                             {
                                 <MudTimelineItem Color="@t.Color" Size="Size.Small">
                                     <ItemContent>
-                                        <MudText Typo="Typo.body2"><b>@t.Title</b></MudText>
+                                        <MudText Typo="Typo.body2">
+                                            <b>@t.Title</b>
+                                        </MudText>
                                         <MudText Typo="Typo.caption" Color="Color.Tertiary">@t.Date</MudText>
                                     </ItemContent>
                                 </MudTimelineItem>
@@ -189,6 +201,7 @@
     }
 </MudStack>
 
+@inject NavigationManager     Navigation;
 @inject WohnobjektService     Service;
 
 @code {
@@ -207,11 +220,12 @@
         await base.OnParametersSetAsync();
     }
 
+    private void BearbeitenClicked() => Navigation.NavigateTo($"/objekte/bearbeiten/{Id}");
+
     private readonly List<BreadcrumbItem> breadcrumbs =
     [
-        new("Objekte", href: "/objekte")
+        new BreadcrumbItem("Objekte", "/objekte")
     ];
-
     private static readonly string[] Features =
     {
         "Altbau", "Stuck", "Dielenboden", "Tageslichtbad", "Balkon", "Aufzug", "Kellerabteil", "Einbauküche",
@@ -222,21 +236,21 @@
 
     private static readonly DocItem[] Documents =
     {
-        new("Energieausweis.pdf",       "2,1 MB · vor 12 Tagen",  Icons.Material.Filled.PictureAsPdf, Color.Error),
-        new("Grundriss-Etage-3.pdf",    "1,4 MB · vor 12 Tagen",  Icons.Material.Filled.PictureAsPdf, Color.Error),
-        new("Exposé.pdf",               "3,8 MB · vor 6 Tagen",   Icons.Material.Filled.PictureAsPdf, Color.Error),
-        new("Fotos.zip",                "18 MB · vor 12 Tagen",   Icons.Material.Filled.FolderZip,    Color.Warning),
-        new("Mietvertrag-Vorlage.docx", "92 KB · vor 30 Tagen",   Icons.Material.Filled.Description,  Color.Info),
+        new("Energieausweis.pdf", "2,1 MB · vor 12 Tagen", Icons.Material.Filled.PictureAsPdf, Color.Error),
+        new("Grundriss-Etage-3.pdf", "1,4 MB · vor 12 Tagen", Icons.Material.Filled.PictureAsPdf, Color.Error),
+        new("Exposé.pdf", "3,8 MB · vor 6 Tagen", Icons.Material.Filled.PictureAsPdf, Color.Error),
+        new("Fotos.zip", "18 MB · vor 12 Tagen", Icons.Material.Filled.FolderZip, Color.Warning),
+        new("Mietvertrag-Vorlage.docx", "92 KB · vor 30 Tagen", Icons.Material.Filled.Description, Color.Info)
     };
 
     private record TimelineEntry(string Title, string Date, Color Color);
 
     private static readonly TimelineEntry[] History =
     {
-        new("Objekt veröffentlicht",                       "09.05.2026 · 14:22 · Anna Müller",  Color.Success),
-        new("Erste Anfrage eingegangen (Lukas Weber)",      "09.05.2026 · 19:08",                Color.Info),
-        new("Besichtigungstermin gebucht (3 Interessenten)","12.05.2026 · 10:00",                Color.Warning),
-        new("Selbstauskunft eingereicht (L. Weber)",        "16.05.2026 · 11:42",                Color.Primary),
-        new("Vertragsverhandlung gestartet",                "21.05.2026 · 09:30",                Color.Tertiary),
+        new("Objekt veröffentlicht", "09.05.2026 · 14:22 · Anna Müller", Color.Success),
+        new("Erste Anfrage eingegangen (Lukas Weber)", "09.05.2026 · 19:08", Color.Info),
+        new("Besichtigungstermin gebucht (3 Interessenten)", "12.05.2026 · 10:00", Color.Warning),
+        new("Selbstauskunft eingereicht (L. Weber)", "16.05.2026 · 11:42", Color.Primary),
+        new("Vertragsverhandlung gestartet", "21.05.2026 · 09:30", Color.Tertiary)
     };
 }

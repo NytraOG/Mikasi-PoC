@@ -1,5 +1,6 @@
 ﻿using Domain.Data.Contexts;
 using Domain.Data.Entities;
+using Domain.Extensions;
 using Domain.Viewmodels;
 using Microsoft.EntityFrameworkCore;
 
@@ -11,7 +12,7 @@ public class WohnobjektService
 
     public WohnobjektService(DefaultContext dbContext) => this.dbContext = dbContext;
 
-    public async Task SaveWohnobjektAsync(NeuesWohnobjektViewmodel model)
+    public async Task CreateWohnobjektAsync(WohnobjektViewmodel model)
     {
         //todo Validation
 
@@ -23,6 +24,55 @@ public class WohnobjektService
         await dbContext.SaveChangesAsync();
     }
 
+    public async Task UpdateWohnobjectAsync(WohnobjektViewmodel viewmodel)
+    {
+        var wirtschaftseinheit = await FindWirtschaftseinheitOrDefaultAsync(viewmodel);
+
+        UpdateWirtschaftseinheit(viewmodel, wirtschaftseinheit);
+
+        var etage = UpdateEtage(viewmodel, wirtschaftseinheit);
+
+        UpdateNutzungseinheit(viewmodel, etage);
+
+        await dbContext.SaveChangesAsync();
+    }
+
+    private static void UpdateNutzungseinheit(WohnobjektViewmodel viewmodel, Etage etage)
+    {
+        var nutzungseinheit = etage.Nutzungseinheiten.FirstOrDefault(ne => ne.Id == viewmodel.NutzungseinheitId);
+
+        if (nutzungseinheit is null)
+            throw new Exception("Nutzungseinheit weg");
+
+        nutzungseinheit.UpdateWith(viewmodel);
+    }
+
+    private Etage UpdateEtage(WohnobjektViewmodel viewmodel, Wirtschaftseinheit? wirtschaftseinheit)
+    {
+        var etage = wirtschaftseinheit.Etagen.FirstOrDefault(e => e.Bezeichnung == viewmodel.Etage);
+
+        if (etage is null)
+        {
+            etage = CreateEtage(viewmodel, wirtschaftseinheit);
+
+            dbContext.Etagen.Add(etage);
+        }
+
+        return etage;
+    }
+
+    private static void UpdateWirtschaftseinheit(WohnobjektViewmodel viewmodel, Wirtschaftseinheit? wirtschaftseinheit)
+    {
+        if (wirtschaftseinheit is null)
+            throw new Exception("Wirtschaftseinheit weg");
+
+        wirtschaftseinheit.Bezeichnung = viewmodel.BezeichnungWirtschaftseinheit!;
+        wirtschaftseinheit.Straße      = viewmodel.Straße!;
+        wirtschaftseinheit.Hausnummer  = viewmodel.Hausnummer!;
+        wirtschaftseinheit.PLZ         = viewmodel.PLZ!;
+        wirtschaftseinheit.Ort         = viewmodel.Ort!;
+    }
+
     public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
                                                                                     .Include(ne => ne.Etage)
                                                                                     .ThenInclude(e => e.Wirtschaftseinheit)
@@ -32,7 +82,28 @@ public class WohnobjektService
 
     public Task<Nutzungseinheit[]> LoadAllNutzungseinheitenAsync() => dbContext.Nutzungseinheiten.ToArrayAsync();
 
-    private async Task<Wirtschaftseinheit> FindOrCreateWirtschaftseinheit(NeuesWohnobjektViewmodel model)
+    private async Task<Wirtschaftseinheit> FindOrCreateWirtschaftseinheit(WohnobjektViewmodel viewmodel)
+    {
+        var wirtschaftseinheit = await FindWirtschaftseinheitOrDefaultAsync(viewmodel);
+
+        if (wirtschaftseinheit is not null)
+            return wirtschaftseinheit;
+
+        wirtschaftseinheit = new Wirtschaftseinheit
+        {
+            Bezeichnung = viewmodel.BezeichnungWirtschaftseinheit!,
+            Straße      = viewmodel.Straße!,
+            Hausnummer  = viewmodel.Hausnummer!,
+            PLZ         = viewmodel.PLZ!,
+            Ort         = viewmodel.Ort!
+        };
+
+        dbContext.Wirtschaftseinheiten.Add(wirtschaftseinheit);
+
+        return wirtschaftseinheit;
+    }
+
+    private async Task<Wirtschaftseinheit?> FindWirtschaftseinheitOrDefaultAsync(WohnobjektViewmodel model)
     {
         var wirtschaftseinheit = await dbContext.Wirtschaftseinheiten
                                                 .Include(we => we.Etagen)
@@ -41,59 +112,37 @@ public class WohnobjektService
                                                                            we.Hausnummer == model.Hausnummer &&
                                                                            we.PLZ == model.PLZ &&
                                                                            we.Ort == model.Ort);
-
-        if (wirtschaftseinheit is null)
-        {
-            wirtschaftseinheit = new Wirtschaftseinheit
-            {
-                Bezeichnung = model.BezeichnungWirtschaftseinheit,
-                Straße      = model.Straße,
-                Hausnummer  = model.Hausnummer,
-                PLZ         = model.PLZ,
-                Ort         = model.Ort
-            };
-
-            dbContext.Wirtschaftseinheiten.Add(wirtschaftseinheit);
-        }
-
         return wirtschaftseinheit;
     }
 
-    private Etage FindOrCreateEtage(NeuesWohnobjektViewmodel model, Wirtschaftseinheit wirtschaftseinheit)
+    private Etage FindOrCreateEtage(WohnobjektViewmodel viewmodel, Wirtschaftseinheit wirtschaftseinheit)
     {
-        var etage = wirtschaftseinheit.Etagen.FirstOrDefault(e => e.Bezeichnung == model.Etage);
+        var etage = wirtschaftseinheit.Etagen.FirstOrDefault(e => e.Bezeichnung == viewmodel.Etage);
 
         if (etage is null)
         {
-            etage = new Etage { Wirtschaftseinheit = wirtschaftseinheit, Bezeichnung = model.Etage!.Trim() };
+            etage = CreateEtage(viewmodel, wirtschaftseinheit);
 
-            wirtschaftseinheit.AddEtage(etage);
             dbContext.Etagen.Add(etage);
         }
 
         return etage;
     }
 
-    private void CreateNutzungseinheit(NeuesWohnobjektViewmodel model, Etage etage)
+    private static Etage CreateEtage(WohnobjektViewmodel viewmodel, Wirtschaftseinheit wirtschaftseinheit)
+    {
+        var etage = new Etage { Wirtschaftseinheit = wirtschaftseinheit, Bezeichnung = viewmodel.Etage!.Trim() };
+        wirtschaftseinheit.AddEtage(etage);
+        return etage;
+    }
+
+    private void CreateNutzungseinheit(WohnobjektViewmodel model, Etage etage)
     {
         var nutzungseinheit = etage.Nutzungseinheiten.FirstOrDefault(ne => ne.Bezeichnung == model.BezeichnungNutzungseinheit);
 
         if (nutzungseinheit is null)
         {
-            nutzungseinheit = new Nutzungseinheit
-            {
-                Etage             = etage,
-                Bezeichnung       = model.BezeichnungNutzungseinheit,
-                Beschreibung      = model.Beschreibung,
-                AnzahlZimmer      = model.AnzahlZimmer,
-                Wohnfläche        = model.Wohnfläche,
-                Typ               = model.Typ,
-                Kaltmiete         = new Preis(model.Kaltmiete),
-                Nebenkosten       = new Preis(model.Nebenkosten),
-                Heizkosten        = new Preis(model.Heizkosten),
-                Kaution           = new Preis(model.Kaution),
-                FrühesterEinzugAb = model.FrühesterEinzugAb
-            };
+            nutzungseinheit = model.ToNutzungseinheit(etage);
 
             etage.AddNutzungseinheit(nutzungseinheit);
             dbContext.Nutzungseinheiten.Add(nutzungseinheit);
