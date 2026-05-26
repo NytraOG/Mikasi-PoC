@@ -28,6 +28,12 @@ builder.Services.AddAuthentication(options =>
         })
        .AddIdentityCookies();
 
+builder.Services.ConfigureApplicationCookie(options =>
+{
+    options.LoginPath        = "/auth/login";
+    options.AccessDeniedPath = "/auth/login";
+});
+
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<AuditInterceptor>();
 
@@ -72,6 +78,9 @@ else
 
 app.UseStatusCodePagesWithReExecute("/not-found", createScopeForStatusCodePages: true);
 app.UseHttpsRedirection();
+
+app.UseAuthentication();
+app.UseAuthorization();
 
 app.UseAntiforgery();
 
