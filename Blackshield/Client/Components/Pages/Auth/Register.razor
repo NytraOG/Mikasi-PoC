@@ -203,7 +203,8 @@
             {
                 UserName       = _model.UserName,
                 Email          = _model.Email,
-                EmailConfirmed = true // PoC: Auto-Confirm – ohne Mailversand sofort anmeldbar
+                EmailConfirmed = true // PoC: Auto-Confirm – ohne Mailversand sofort anmeldbar todo: gegen mailverifikation tauschen
+
             };
             var result = await UserManager.CreateAsync(user, _model.Password!);
 

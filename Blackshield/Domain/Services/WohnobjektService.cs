@@ -2,6 +2,7 @@
 using Domain.Data.Entities;
 using Domain.Extensions;
 using Domain.Viewmodels;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 
 namespace Domain.Services;
@@ -9,8 +10,31 @@ namespace Domain.Services;
 public class WohnobjektService
 {
     private readonly DefaultContext dbContext;
+    private readonly HttpContext    httpContext;
 
-    public WohnobjektService(DefaultContext dbContext) => this.dbContext = dbContext;
+    public WohnobjektService(DefaultContext dbContext, IHttpContextAccessor httpContextAccessor)
+    {
+        this.dbContext = dbContext;
+        httpContext    = httpContextAccessor.HttpContext;
+    }
+
+    public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
+                                                                                    .Include(ne => ne.Etage)
+                                                                                    .ThenInclude(e => e.Wirtschaftseinheit)
+                                                                                    .FirstOrDefaultAsync(ne => ne.Id == id);
+
+    public Wirtschaftseinheit[] LoadAllWirtschaftseinheiten() => dbContext.Wirtschaftseinheiten.ToArray();
+
+    public async Task<Wirtschaftseinheit[]> LoadAllWirtschaftseinheitenOfCurrentUser() => await dbContext.Wirtschaftseinheiten.ToArrayAsync();
+
+    public Task<Nutzungseinheit[]> LoadAllNutzungseinheitenAsync() => dbContext.Nutzungseinheiten.ToArrayAsync();
+
+    public Task<Nutzungseinheit[]> LoadAllNutzungseinheitenOfCurrentUserAsync()
+    {
+        var userName = httpContext.User?.Identity?.Name;
+
+        return dbContext.Nutzungseinheiten.Where(ne => ne.CreatedBy == userName).ToArrayAsync();
+    }
 
     public async Task CreateWohnobjektAsync(WohnobjektViewmodel model)
     {
@@ -73,15 +97,6 @@ public class WohnobjektService
         wirtschaftseinheit.Ort         = viewmodel.Ort!;
     }
 
-    public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
-                                                                                    .Include(ne => ne.Etage)
-                                                                                    .ThenInclude(e => e.Wirtschaftseinheit)
-                                                                                    .FirstOrDefaultAsync(ne => ne.Id == id);
-
-    public Wirtschaftseinheit[] LoadAllWirtschaftseinheiten() => dbContext.Wirtschaftseinheiten.ToArray();
-
-    public Task<Nutzungseinheit[]> LoadAllNutzungseinheitenAsync() => dbContext.Nutzungseinheiten.ToArrayAsync();
-
     private async Task<Wirtschaftseinheit> FindOrCreateWirtschaftseinheit(WohnobjektViewmodel viewmodel)
     {
         var wirtschaftseinheit = await FindWirtschaftseinheitOrDefaultAsync(viewmodel);
@@ -108,10 +123,8 @@ public class WohnobjektService
         var wirtschaftseinheit = await dbContext.Wirtschaftseinheiten
                                                 .Include(we => we.Etagen)
                                                 .ThenInclude(etage => etage.Nutzungseinheiten)
-                                                .FirstOrDefaultAsync(we => we.Straße == model.Straße &&
-                                                                           we.Hausnummer == model.Hausnummer &&
-                                                                           we.PLZ == model.PLZ &&
-                                                                           we.Ort == model.Ort);
+                                                .FirstOrDefaultAsync(we => we.Id == model.WirtschaftseinheitId);
+
         return wirtschaftseinheit;
     }
 

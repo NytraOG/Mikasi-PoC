@@ -1,5 +1,6 @@
 @page "/objekte"
 @using Domain.Data.Entities
+@using Domain.Data.Enums
 @using Domain.Services
 @attribute [StreamRendering]
 
@@ -10,7 +11,7 @@
     <MudStack Row="true" AlignItems="AlignItems.Start" Justify="Justify.SpaceBetween" Class="flex-wrap">
         <MudStack Spacing="1">
             <MudText Typo="Typo.h4" Class="blackshield-page-title">Objekte</MudText>
-            <MudText Typo="Typo.body1" Color="Color.Tertiary">12 aktive · 3 in Vorbereitung · 5 archiviert</MudText>
+            <MudText Typo="Typo.body1" Color="Color.Tertiary">@AktiveWohnobjekte aktive · @WohnobjekteInVorbereitung in Vorbereitung · @ArchivierteWohnobjekte archiviert</MudText>
         </MudStack>
         <MudStack Row="true" Spacing="2">
             <MudButton StartIcon="@Icons.Material.Outlined.Download"
@@ -188,11 +189,18 @@
 @code {
     public  bool              IsLoading { get; set; } = true;
     private bool              gridView = true;
-    public  Nutzungseinheit[] Nutzungseinheiten { get; set; } = [];
+    public  Nutzungseinheit[] Nutzungseinheiten         { get; set; } = [];
+    public  int               AktiveWohnobjekte         { get; set; }
+    public  int               WohnobjekteInVorbereitung { get; set; }
+    public  int               ArchivierteWohnobjekte    { get; set; }
 
     protected override async Task OnInitializedAsync()
     {
-        Nutzungseinheiten = await Service.LoadAllNutzungseinheitenAsync();
+        Nutzungseinheiten = await Service.LoadAllNutzungseinheitenOfCurrentUserAsync();
+
+        AktiveWohnobjekte         = Nutzungseinheiten.Count(ne => ne.Status is Mietstatus.Aktiv);
+        WohnobjekteInVorbereitung = Nutzungseinheiten.Count(ne => ne.Status is Mietstatus.Entwurf or Mietstatus.Vorbereitung);
+        ArchivierteWohnobjekte    = Nutzungseinheiten.Count(ne => ne.Status is Mietstatus.Archiviert);
 
         IsLoading = false;
     }

@@ -4,6 +4,7 @@ namespace Domain.Viewmodels;
 
 public class WohnobjektViewmodel
 {
+    public Guid        WirtschaftseinheitId          { get; set; }
     public int         AnzahlZimmer                  { get; set; }
     public string?     BezeichnungWirtschaftseinheit { get; set; }
     public Guid        NutzungseinheitId             { get; set; }

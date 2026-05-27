@@ -38,6 +38,7 @@ public static class Mapping
     {
         var viewmodel = new WohnobjektViewmodel
         {
+            WirtschaftseinheitId          = nutzungseinheit.Etage.WirtschaftseinheitId,
             BezeichnungWirtschaftseinheit = nutzungseinheit.Etage.Wirtschaftseinheit.Bezeichnung,
             Etage                         = nutzungseinheit.Etage.Bezeichnung,
             BezeichnungNutzungseinheit    = nutzungseinheit.Bezeichnung,

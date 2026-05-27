@@ -5,5 +5,6 @@ public enum Mietstatus
     Entwurf,
     Vorbereitung,
     Aktiv,
-    Zurückgezogen
+    Zurückgezogen,
+    Archiviert
 }
