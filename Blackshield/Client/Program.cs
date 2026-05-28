@@ -4,6 +4,8 @@ using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
 using Domain.Data.Interceptors;
 using Domain.Services;
+using Domain.Services.Abstractions;
+using Domain.Services.Documents;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -35,6 +37,7 @@ builder.Services.ConfigureApplicationCookie(options =>
 
 builder.Services.AddHttpContextAccessor();
 builder.Services.AddSingleton<AuditInterceptor>();
+builder.Services.AddTransient<IDocumentStorage, LocalFilesystemDocumentStorage>();
 
 var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
 

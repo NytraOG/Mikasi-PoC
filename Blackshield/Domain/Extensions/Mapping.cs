@@ -16,7 +16,9 @@ public static class Mapping
         nutzungseinheit.Nebenkosten       = new Preis(viewmodel.Nebenkosten);
         nutzungseinheit.Heizkosten        = new Preis(viewmodel.Heizkosten);
         nutzungseinheit.Kaution           = new Preis(viewmodel.Kaution);
-        nutzungseinheit.FrühesterEinzugAb = viewmodel.FrühesterEinzugAb;
+        nutzungseinheit.FrühesterEinzugAb = viewmodel.FrühesterEinzugAb.HasValue
+            ? DateOnly.FromDateTime(viewmodel.FrühesterEinzugAb.Value)
+            : default;
     }
 
     public static Nutzungseinheit ToNutzungseinheit(this WohnobjektViewmodel viewmodel, Etage etage) => new()
@@ -31,7 +33,9 @@ public static class Mapping
         Nebenkosten       = new Preis(viewmodel.Nebenkosten),
         Heizkosten        = new Preis(viewmodel.Heizkosten),
         Kaution           = new Preis(viewmodel.Kaution),
-        FrühesterEinzugAb = viewmodel.FrühesterEinzugAb
+        FrühesterEinzugAb = viewmodel.FrühesterEinzugAb.HasValue
+            ? DateOnly.FromDateTime(viewmodel.FrühesterEinzugAb.Value)
+            : default
     };
 
     public static WohnobjektViewmodel ToViewmodel(this Nutzungseinheit nutzungseinheit)
@@ -54,7 +58,9 @@ public static class Mapping
             Nebenkosten                   = nutzungseinheit.Nebenkosten.Betrag,
             Heizkosten                    = nutzungseinheit.Heizkosten.Betrag,
             Kaution                       = nutzungseinheit.Kaution.Betrag,
-            FrühesterEinzugAb             = nutzungseinheit.FrühesterEinzugAb,
+            FrühesterEinzugAb             = nutzungseinheit.FrühesterEinzugAb == default
+                                                ? null
+                                                : nutzungseinheit.FrühesterEinzugAb.ToDateTime(TimeOnly.MinValue),
             NutzungseinheitId             = nutzungseinheit.Id,
             EtageId                       = nutzungseinheit.EtageId
         };

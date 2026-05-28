@@ -11,6 +11,9 @@
     </ItemGroup>
 
     <ItemGroup>
+        <Reference Include="Microsoft.AspNetCore.Components.Web">
+          <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\10.0.8\Microsoft.AspNetCore.Components.Web.dll</HintPath>
+        </Reference>
         <Reference Include="Microsoft.Extensions.Identity.Stores">
             <HintPath>C:\Program Files\dotnet\shared\Microsoft.AspNetCore.App\10.0.8\Microsoft.Extensions.Identity.Stores.dll</HintPath>
         </Reference>

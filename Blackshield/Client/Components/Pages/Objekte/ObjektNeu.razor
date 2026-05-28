@@ -1,15 +1,16 @@
 @page "/objekte/neu"
 @using Domain.Data.Enums
 @using Domain.Services
+@using Domain.Services.Documents
 @using Domain.Viewmodels
-@inject NavigationManager     Navigation
-@inject ISnackbar             Snackbar
-@inject WohnobjektService     Service;
+@inject NavigationManager Navigation
+@inject ISnackbar         Snackbar
+@inject WohnobjektService Service;
 
 <PageTitle>Neues Objekt · Blackshield</PageTitle>
 
 <MudStack Spacing="5">
-    <MudBreadcrumbs Items="_breadcrumbs" Class="pa-0" Separator=">"/>
+    <MudBreadcrumbs Items="breadcrumbs" Class="pa-0" Separator=">"/>
 
     <MudStack Spacing="1">
         <MudText Typo="Typo.h4" Class="blackshield-page-title">Neues Objekt anlegen</MudText>
@@ -86,7 +87,7 @@
                                 <MudNumericField T="decimal" Label="Kaution (Monate)" @bind-Value="Model.Kaution" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                             </MudItem>
                             <MudItem xs="12" md="6">
-                                <MudDatePicker Label="Frühester Einzug" @bind-Value="Model.FrühesterEinzugAb" Variant="Variant.Outlined" Margin="Margin.Dense"/>
+                                <MudDatePicker Label="Frühester Einzug" @bind-Date="Model.FrühesterEinzugAb" Variant="Variant.Outlined" Margin="Margin.Dense"/>
                             </MudItem>
                         </MudGrid>
                     </div>
@@ -104,12 +105,17 @@
                     <div>
                         <MudText Typo="Typo.h6" Class="mb-3">Bilder &amp; Dokumente</MudText>
                         <MudPaper Outlined="true" Class="pa-6 blackshield-empty-state" Style="border-radius: 12px; text-align: center;">
-                            <MudIcon Icon="@Icons.Material.Outlined.CloudUpload" Size="Size.Large" Color="Color.Tertiary"/>
-                            <MudText Typo="Typo.body2" Class="mt-2">Dateien hierher ziehen oder klicken zum Auswählen</MudText>
-                            <MudText Typo="Typo.caption" Color="Color.Tertiary">JPG, PNG, PDF · max. 25 MB pro Datei</MudText>
-                            <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-3" StartIcon="@Icons.Material.Filled.Add">
-                                Dateien auswählen
-                            </MudButton>
+                            <MudCardContent>
+                                <MudFileUpload @bind-Files="Model.BrowserFiles"
+                                               DragAndDrop="true"
+                                               Disabled="UploadDisabled"/>
+                            </MudCardContent>
+                            @* <MudIcon Icon="@Icons.Material.Outlined.CloudUpload" Size="Size.Large" Color="Color.Tertiary"/> *@
+                            @* <MudText Typo="Typo.body2" Class="mt-2">Dateien hierher ziehen oder klicken zum Auswählen</MudText> *@
+                            @* <MudText Typo="Typo.caption" Color="Color.Tertiary">JPG, PNG, PDF · max. 25 MB pro Datei</MudText> *@
+                            @* <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-3" StartIcon="@Icons.Material.Filled.Add"> *@
+                            @*     Dateien auswählen *@
+                            @* </MudButton> *@
                         </MudPaper>
                     </div>
                 </MudStack>
@@ -120,7 +126,7 @@
             <MudPaper Elevation="0" Outlined="true" Class="pa-5 sticky-side" Style="border-radius: 16px;">
                 <MudStack Spacing="3">
                     <MudText Typo="Typo.h6">Veröffentlichung</MudText>
-                    <MudRadioGroup T="string" Value="@_visibility" ValueChanged="@((string v) => _visibility = v)">
+                    <MudRadioGroup T="string" Value="@visibility" ValueChanged="@((string v) => visibility = v)">
                         <MudRadio T="string" Value="@("entwurf")" Color="Color.Primary">
                             <MudStack Spacing="0">
                                 <MudText Typo="Typo.body2" Style="font-weight: 600;">Als Entwurf speichern</MudText>
@@ -165,13 +171,17 @@
 </MudStack>
 
 @code {
-    public WohnobjektViewmodel Model { get; set; } = new();
-    private readonly List<BreadcrumbItem> _breadcrumbs = new()
-    {
+
+
+    public bool                        UploadDisabled { get; set; }
+    public WohnobjektViewmodel         Model          { get; set; } = new();
+    public IReadOnlyList<IBrowserFile> BrowserFiles   { get; set; } = [];
+    private readonly List<BreadcrumbItem> breadcrumbs =
+    [
         new BreadcrumbItem("Objekte", "/objekte"),
         new BreadcrumbItem("Neues Objekt", null, true)
-    };
-    private string _visibility = "intern";
+    ];
+    private string visibility = "intern";
 
     private void RaiseErrorToast(string message)
     {

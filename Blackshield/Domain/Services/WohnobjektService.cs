@@ -1,6 +1,7 @@
 ﻿using Domain.Data.Contexts;
 using Domain.Data.Entities;
 using Domain.Extensions;
+using Domain.Services.Abstractions;
 using Domain.Viewmodels;
 using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
@@ -9,13 +10,15 @@ namespace Domain.Services;
 
 public class WohnobjektService
 {
-    private readonly DefaultContext dbContext;
-    private readonly HttpContext    httpContext;
+    private readonly DefaultContext   dbContext;
+    private readonly IDocumentStorage documentStorage;
+    private readonly HttpContext      httpContext;
 
-    public WohnobjektService(DefaultContext dbContext, IHttpContextAccessor httpContextAccessor)
+    public WohnobjektService(DefaultContext dbContext, IHttpContextAccessor httpContextAccessor, IDocumentStorage documentStorage)
     {
-        this.dbContext = dbContext;
-        httpContext    = httpContextAccessor.HttpContext;
+        this.dbContext       = dbContext;
+        this.documentStorage = documentStorage;
+        httpContext          = httpContextAccessor.HttpContext;
     }
 
     public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
@@ -42,10 +45,29 @@ public class WohnobjektService
 
         var wirtschaftseinheit = await FindOrCreateWirtschaftseinheit(model);
         var etage              = FindOrCreateEtage(model, wirtschaftseinheit);
+        var nutzungseinheit    = CreateNutzungseinheit(model, etage);
 
-        CreateNutzungseinheit(model, etage);
+        var tasks = new List<Task>();
 
-        await dbContext.SaveChangesAsync();
+        foreach (var browserFile in model.BrowserFiles)
+        {
+            var dokument = new Dokument
+            {
+                Dateiname         = browserFile.Name,
+                ContentType       = browserFile.ContentType,
+                GrößeBytes        = browserFile.Size,
+                NutzungseinheitId = nutzungseinheit.Id,
+                Nutzungseinheit   = nutzungseinheit
+            };
+
+            var uploadTask = documentStorage.UploadAsync(dokument.StorageKey, browserFile.OpenReadStream(), dokument.ContentType);
+            tasks.Add(uploadTask);
+        }
+
+        var saveTask = dbContext.SaveChangesAsync();
+        tasks.Add(saveTask);
+
+        await Task.WhenAll(tasks);
     }
 
     public async Task UpdateWohnobjectAsync(WohnobjektViewmodel viewmodel)
@@ -149,7 +171,7 @@ public class WohnobjektService
         return etage;
     }
 
-    private void CreateNutzungseinheit(WohnobjektViewmodel model, Etage etage)
+    private Nutzungseinheit CreateNutzungseinheit(WohnobjektViewmodel model, Etage etage)
     {
         var nutzungseinheit = etage.Nutzungseinheiten.FirstOrDefault(ne => ne.Bezeichnung == model.BezeichnungNutzungseinheit);
 
@@ -160,5 +182,7 @@ public class WohnobjektService
             etage.AddNutzungseinheit(nutzungseinheit);
             dbContext.Nutzungseinheiten.Add(nutzungseinheit);
         }
+
+        return nutzungseinheit;
     }
 }
