@@ -19,6 +19,11 @@ internal sealed class NutzungseinheitConfiguration : BaseEntityConfiguration<Nut
         builder.ComplexProperty(ne => ne.Nebenkosten, ConfigurePreis);
         builder.ComplexProperty(ne => ne.Heizkosten, ConfigurePreis);
         builder.ComplexProperty(ne => ne.Kaution, ConfigurePreis);
+
+        builder.HasMany(ne => ne.Dokumente)
+               .WithOne(d => d.Nutzungseinheit)
+               .HasForeignKey(d => d.NutzungseinheitId)
+               .OnDelete(DeleteBehavior.Cascade);
     }
 
     private static void ConfigurePreis(ComplexPropertyBuilder<Preis> b)
