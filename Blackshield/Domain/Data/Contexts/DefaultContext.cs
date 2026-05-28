@@ -12,6 +12,7 @@ public class DefaultContext(DbContextOptions<DefaultContext> options) : Identity
     public DbSet<Wirtschaftseinheit> Wirtschaftseinheiten => Set<Wirtschaftseinheit>();
     public DbSet<Nutzungseinheit>    Nutzungseinheiten    => Set<Nutzungseinheit>();
     public DbSet<Etage>              Etagen               => Set<Etage>();
+    public DbSet<Dokument>           Dokumente            => Set<Dokument>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

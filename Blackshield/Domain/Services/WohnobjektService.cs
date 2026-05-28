@@ -22,6 +22,7 @@ public class WohnobjektService
     }
 
     public Task<Nutzungseinheit?> LoadNutzungseinheitByIdAsync(Guid id) => dbContext.Nutzungseinheiten
+                                                                                    .Include(ne => ne.Dokumente)
                                                                                     .Include(ne => ne.Etage)
                                                                                     .ThenInclude(e => e.Wirtschaftseinheit)
                                                                                     .FirstOrDefaultAsync(ne => ne.Id == id);
@@ -47,27 +48,50 @@ public class WohnobjektService
         var etage              = FindOrCreateEtage(model, wirtschaftseinheit);
         var nutzungseinheit    = CreateNutzungseinheit(model, etage);
 
+        await PersistDataAsync(model, nutzungseinheit);
+    }
+
+    private async Task PersistDataAsync(WohnobjektViewmodel model, Nutzungseinheit nutzungseinheit)
+    {
         var tasks = new List<Task>();
 
-        foreach (var browserFile in model.BrowserFiles)
+        StoreDocuments(model, nutzungseinheit, tasks);
+
+        var saveTask = dbContext.SaveChangesAsync();
+        tasks.Add(saveTask);
+
+        try
+        {
+            await Task.WhenAll(tasks);
+        }
+        catch (Exception e)
+        {
+            //documentStorage.Delete angelegte dokumente
+            dbContext.ChangeTracker.Clear();
+            throw;
+        }
+    }
+
+    private void StoreDocuments(WohnobjektViewmodel model, Nutzungseinheit nutzungseinheit, List<Task> tasks)
+    {
+
+        foreach (var browserFile in model.Dokumente)
         {
             var dokument = new Dokument
             {
                 Dateiname         = browserFile.Name,
                 ContentType       = browserFile.ContentType,
+                LastModified      = browserFile.LastModified,
                 GrößeBytes        = browserFile.Size,
                 NutzungseinheitId = nutzungseinheit.Id,
                 Nutzungseinheit   = nutzungseinheit
             };
 
-            var uploadTask = documentStorage.UploadAsync(dokument.StorageKey, browserFile.OpenReadStream(), dokument.ContentType);
+            dbContext.Dokumente.Add(dokument);
+
+            var uploadTask = documentStorage.UploadAsync(dokument.StorageKey, browserFile.OpenReadStream(Konstanten.MaxDocumentBytes), dokument.ContentType);
             tasks.Add(uploadTask);
         }
-
-        var saveTask = dbContext.SaveChangesAsync();
-        tasks.Add(saveTask);
-
-        await Task.WhenAll(tasks);
     }
 
     public async Task UpdateWohnobjectAsync(WohnobjektViewmodel viewmodel)

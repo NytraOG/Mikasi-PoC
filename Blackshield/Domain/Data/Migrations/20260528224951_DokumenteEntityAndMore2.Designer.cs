@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Domain.Data.Contexts;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -12,9 +13,11 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace Domain.Data.Migrations
 {
     [DbContext(typeof(DefaultContext))]
-    partial class DefaultContextModelSnapshot : ModelSnapshot
+    [Migration("20260528224951_DokumenteEntityAndMore2")]
+    partial class DokumenteEntityAndMore2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -74,12 +77,12 @@ namespace Domain.Data.Migrations
                         .HasColumnName("updated_by");
 
                     b.HasKey("Id")
-                        .HasName("pk_dokumente");
+                        .HasName("pk_dokument");
 
                     b.HasIndex("NutzungseinheitId")
-                        .HasDatabaseName("ix_dokumente_nutzungseinheit_id");
+                        .HasDatabaseName("ix_dokument_nutzungseinheit_id");
 
-                    b.ToTable("dokumente", "blackshield");
+                    b.ToTable("dokument", "blackshield");
                 });
 
             modelBuilder.Entity("Domain.Data.Entities.Etage", b =>
@@ -623,7 +626,7 @@ namespace Domain.Data.Migrations
                         .HasForeignKey("NutzungseinheitId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired()
-                        .HasConstraintName("fk_dokumente_nutzungseinheiten_nutzungseinheit_id");
+                        .HasConstraintName("fk_dokument_nutzungseinheiten_nutzungseinheit_id");
 
                     b.Navigation("Nutzungseinheit");
                 });

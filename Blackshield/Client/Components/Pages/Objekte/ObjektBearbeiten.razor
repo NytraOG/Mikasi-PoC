@@ -4,6 +4,7 @@
 @using Domain.Data.Enums
 @using Domain.Extensions
 @using Domain.Services
+@using Domain.Services.Abstractions
 @using Domain.Viewmodels
 @using Newtonsoft.Json
 
@@ -150,20 +151,25 @@ else
                     <MudText Typo="Typo.h6" Class="mb-3">Bilder &amp; Dokumente</MudText>
                     <MudPaper Outlined="true" Class="pa-6 blackshield-empty-state"
                               Style="border-radius: 12px; text-align: center;">
-                        <MudIcon Icon="@Icons.Material.Outlined.CloudUpload" Size="Size.Large"
-                                 Color="Color.Tertiary"/>
-                        <MudText Typo="Typo.body2" Class="mt-2">
-                            Dateien hierher ziehen oder klicken zum
-                            Auswählen
-                        </MudText>
-                        <MudText Typo="Typo.caption" Color="Color.Tertiary">
-                            JPG, PNG, PDF · max. 25 MB pro
-                            Datei
-                        </MudText>
-                        <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-3"
-                                   StartIcon="@Icons.Material.Filled.Add">
-                            Dateien auswählen
-                        </MudButton>
+                        <MudCardContent>
+                            <MudFileUpload @bind-Files="Viewmodel.Dokumente"
+                                           DragAndDrop="true"
+                                           Disabled="UploadDisabled"/>
+                        </MudCardContent>
+                        @* <MudIcon Icon="@Icons.Material.Outlined.CloudUpload" Size="Size.Large" *@
+                        @*          Color="Color.Tertiary"/> *@
+                        @* <MudText Typo="Typo.body2" Class="mt-2"> *@
+                        @*     Dateien hierher ziehen oder klicken zum *@
+                        @*     Auswählen *@
+                        @* </MudText> *@
+                        @* <MudText Typo="Typo.caption" Color="Color.Tertiary"> *@
+                        @*     JPG, PNG, PDF · max. 25 MB pro *@
+                        @*     Datei *@
+                        @* </MudText> *@
+                        @* <MudButton Variant="Variant.Outlined" Color="Color.Primary" Class="mt-3" *@
+                        @*            StartIcon="@Icons.Material.Filled.Add"> *@
+                        @*     Dateien auswählen *@
+                        @* </MudButton> *@
                     </MudPaper>
                 </div>
             </MudStack>
@@ -238,13 +244,15 @@ else
 @inject WohnobjektService     Service;
 @inject ISnackbar             Snackbar
 @inject NavigationManager     Navigation;
-@inject IDialogService        DialogService
+@inject IDialogService        DialogService;
+@inject IDocumentStorage      DocumentStorage;
 
 @code {
 
     [Parameter]
     public required string Id { get; set; }
 
+    public           bool                 UploadDisabled { get; set; }
     private          string               visibility  = "intern";
     private readonly List<BreadcrumbItem> breadcrumbs = [new BreadcrumbItem("Objekte", "/objekte")];
 
@@ -263,7 +271,8 @@ else
 
             InitBreadcrumbs(nutzungseinheit);
 
-            Viewmodel  = nutzungseinheit!.ToViewmodel();
+            await LoadDokumente(nutzungseinheit);
+
             CleanState = JsonConvert.SerializeObject(Viewmodel);
         }
         catch (Exception e)
@@ -272,10 +281,27 @@ else
         }
     }
 
+    private async Task LoadDokumente(Nutzungseinheit? nutzungseinheit)
+    {
+        var viewmodel  = nutzungseinheit!.ToViewmodel();
+
+        var browserFiles = new List<IBrowserFile>();
+        foreach (var dokument in nutzungseinheit?.Dokumente!)
+        {
+            var stream = await DocumentStorage.OpenReadAsync(dokument.StorageKey);
+            var file   = new BrowserFileViewmodel(dokument.Dateiname, dokument.LastModified, dokument.GrößeBytes, dokument.ContentType, stream);
+            browserFiles.Add(file);
+        }
+
+        viewmodel.Dokumente = browserFiles;
+
+        Viewmodel  = viewmodel;
+    }
+
     private void InitBreadcrumbs(Nutzungseinheit? nutzungseinheit)
     {
         breadcrumbs.Add(new BreadcrumbItem(nutzungseinheit?.GetFullAddress() ?? "N/A", $"/objekte/{Id}"));
-        breadcrumbs.Add(new BreadcrumbItem("Bearbeitung", null, true));
+        breadcrumbs.Add(new BreadcrumbItem("Objekt Bearbeiten", null, true));
     }
 
     private void RaiseErrorToast(string message)

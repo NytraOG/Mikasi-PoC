@@ -2,12 +2,12 @@
 
 namespace Domain.Viewmodels;
 
-public class BrowserFileViewmodel(string name, DateTimeOffset lastModified, long size, string contentType, byte[] content)
+public class BrowserFileViewmodel(string name, DateTimeOffset lastModified, long size, string contentType, Stream stream)
         : IBrowserFile
 {
-    public byte[] Content { get; } = content;
+    public Stream Stream { get; } = stream;
 
-    public Stream OpenReadStream(long maxAllowedSize = 512000, CancellationToken cancellationToken = default) => new MemoryStream(Content);
+    public Stream OpenReadStream(long maxAllowedSize = Konstanten.MaxDocumentBytes, CancellationToken cancellationToken = default) => Stream;
 
     public string         Name         { get; } = name;
     public DateTimeOffset LastModified { get; } = lastModified;

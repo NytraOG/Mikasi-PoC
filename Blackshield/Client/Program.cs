@@ -1,5 +1,6 @@
 using Blackshield.Auth;
 using Blackshield.Components;
+using Domain;
 using Domain.Data.Contexts;
 using Domain.Data.Entities.Security;
 using Domain.Data.Interceptors;
@@ -15,7 +16,8 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 builder.Services.AddRazorComponents()
-       .AddInteractiveServerComponents();
+       .AddInteractiveServerComponents()
+       .AddHubOptions(o => o.MaximumReceiveMessageSize = Konstanten.MaxDocumentBytes);
 
 builder.Services.AddMudServices();
 
