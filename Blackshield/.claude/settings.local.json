@@ -2,7 +2,10 @@
   "permissions": {
     "allow": [
       "Bash(dotnet build *)",
-      "Read(//x/Repos/Nytraverse/Mikasi-PoC/**)"
+      "Read(//x/Repos/Nytraverse/Mikasi-PoC/**)",
+      "Bash(ls \"C:\\\\Program Files\\\\dotnet\\\\shared\\\\Microsoft.AspNetCore.App\\\\\" 2>&1)",
+      "Bash(ls \"C:\\\\Program Files\\\\dotnet\\\\shared\\\\Microsoft.AspNetCore.App\\\\\"*\"\\\\Microsoft.AspNetCore.Components.Forms.dll\" 2>&1)",
+      "PowerShell(dotnet build \"X:\\\\Repos\\\\Nytraverse\\\\Mikasi-PoC\\\\Blackshield\\\\Domain\\\\Domain.csproj\" -v minimal 2>&1)"
     ]
   }
 }

@@ -1,6 +1,5 @@
-﻿using Microsoft.AspNetCore.Components.Forms;
-
-namespace Domain.Viewmodels;
+﻿namespace Domain.Viewmodels;
+using Microsoft.AspNetCore.Components.Forms;
 
 public class BrowserFileViewmodel(string name, DateTimeOffset lastModified, long size, string contentType, Stream stream)
         : IBrowserFile
