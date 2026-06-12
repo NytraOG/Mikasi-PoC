@@ -57,7 +57,7 @@ public class LocalFilesystemDocumentStorage(IConfiguration configuration) : IDoc
         return Task.CompletedTask;
     }
 
-    public string GetPresignedDownloadUrl(string key, TimeSpan validFor) => throw new NotImplementedException();
+    public string GetPresignedDownloadUrl(string key, TimeSpan validFor) => string.Empty;
 
     private string GetFinalDirectory(string key, out string? directory)
     {

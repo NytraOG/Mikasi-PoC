@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Mikasi – Vermietung. Endlich einfach.</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600&family=Outfit:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --ink: #1a1d1a;
+  --ink-soft: #5a5f5a;
+  --paper: #faf8f4;
+  --paper-warm: #f2ede3;
+  --accent: #2f6b4f;
+  --accent-soft: #e4ede7;
+  --line: #e2ddd2;
+  --radius: 14px;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'Outfit', sans-serif;
+  background: var(--paper);
+  color: var(--ink);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+.wrap { max-width: 1080px; margin: 0 auto; padding: 0 24px; }
+
+/* ---- NAV ---- */
+nav {
+  display: flex; justify-content: space-between; align-items: center;
+  padding: 28px 0;
+}
+.logo {
+  font-family: 'Fraunces', serif;
+  font-size: 26px; font-weight: 600;
+  letter-spacing: -0.01em;
+  color: var(--ink);
+}
+.logo span { color: var(--accent); }
+.nav-link {
+  font-size: 15px; color: var(--ink-soft);
+  text-decoration: none; font-weight: 500;
+  transition: color .2s;
+}
+.nav-link:hover { color: var(--accent); }
+
+/* ---- HERO ---- */
+.hero { padding: 80px 0 90px; text-align: center; }
+.eyebrow {
+  display: inline-block;
+  font-size: 13px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase;
+  color: var(--accent);
+  background: var(--accent-soft);
+  padding: 7px 16px; border-radius: 100px;
+  margin-bottom: 28px;
+}
+h1 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(2.6rem, 6vw, 4.3rem);
+  font-weight: 500; line-height: 1.08;
+  letter-spacing: -0.02em;
+  margin-bottom: 24px;
+}
+h1 em { font-style: italic; color: var(--accent); }
+.hero p.sub {
+  font-size: clamp(1.05rem, 2vw, 1.25rem);
+  color: var(--ink-soft);
+  max-width: 540px; margin: 0 auto 40px;
+}
+
+/* ---- FORM ---- */
+.signup {
+  display: flex; gap: 10px;
+  max-width: 460px; margin: 0 auto;
+}
+.signup input {
+  flex: 1;
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px;
+  padding: 16px 20px;
+  border: 1.5px solid var(--line);
+  border-radius: var(--radius);
+  background: #fff;
+  color: var(--ink);
+  outline: none;
+  transition: border-color .2s;
+}
+.signup input:focus { border-color: var(--accent); }
+.btn {
+  font-family: 'Outfit', sans-serif;
+  font-size: 16px; font-weight: 600;
+  padding: 16px 26px;
+  border: none; border-radius: var(--radius);
+  background: var(--accent); color: #fff;
+  cursor: pointer; white-space: nowrap;
+  transition: transform .15s, background .2s;
+}
+.btn:hover { background: #275a42; transform: translateY(-1px); }
+.btn:active { transform: translateY(0); }
+.form-note {
+  font-size: 13px; color: var(--ink-soft);
+  margin-top: 14px;
+}
+.form-success {
+  display: none;
+  max-width: 460px; margin: 0 auto;
+  background: var(--accent-soft);
+  border: 1.5px solid var(--accent);
+  border-radius: var(--radius);
+  padding: 20px 24px;
+  color: var(--accent);
+  font-weight: 500;
+}
+
+/* ---- SECTION SHARED ---- */
+section { padding: 70px 0; }
+.section-head { text-align: center; margin-bottom: 56px; }
+.section-head h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.9rem, 3.5vw, 2.6rem);
+  font-weight: 500; letter-spacing: -0.015em;
+  margin-bottom: 12px;
+}
+.section-head p {
+  color: var(--ink-soft); font-size: 1.05rem;
+  max-width: 480px; margin: 0 auto;
+}
+
+/* ---- PROBLEM ---- */
+.problem { background: var(--paper-warm); }
+.problem-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+.problem-card {
+  background: var(--paper);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  padding: 30px 26px;
+}
+.problem-card .num {
+  font-family: 'Fraunces', serif;
+  font-size: 15px; font-weight: 600;
+  color: var(--accent);
+  margin-bottom: 14px;
+}
+.problem-card h3 {
+  font-size: 1.15rem; font-weight: 600;
+  margin-bottom: 8px;
+}
+.problem-card p {
+  font-size: 0.96rem; color: var(--ink-soft);
+}
+
+/* ---- STEPS ---- */
+.steps-grid {
+  display: grid; grid-template-columns: repeat(3, 1fr);
+  gap: 36px;
+}
+.step { text-align: center; }
+.step .circle {
+  width: 54px; height: 54px;
+  margin: 0 auto 18px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #fff;
+  font-family: 'Fraunces', serif;
+  font-size: 22px; font-weight: 600;
+  display: flex; align-items: center; justify-content: center;
+}
+.step h3 {
+  font-size: 1.12rem; font-weight: 600;
+  margin-bottom: 8px;
+}
+.step p {
+  font-size: 0.96rem; color: var(--ink-soft);
+}
+
+/* ---- CLOSING CTA ---- */
+.closing {
+  background: var(--ink);
+  color: var(--paper);
+  text-align: center;
+  border-radius: 24px;
+  padding: 70px 32px;
+  margin: 40px 0 80px;
+}
+.closing h2 {
+  font-family: 'Fraunces', serif;
+  font-size: clamp(1.9rem, 4vw, 2.8rem);
+  font-weight: 500; letter-spacing: -0.015em;
+  margin-bottom: 16px;
+}
+.closing p {
+  color: #b9bdb6; font-size: 1.05rem;
+  margin-bottom: 36px;
+}
+.closing .signup input { border-color: transparent; }
+.closing .form-note { color: #8b908a; }
+.closing .form-success {
+  background: rgba(255,255,255,0.08);
+  border-color: var(--accent);
+  color: #cfe5d8;
+}
+
+/* ---- FOOTER ---- */
+footer {
+  border-top: 1px solid var(--line);
+  padding: 36px 0;
+  display: flex; justify-content: space-between; align-items: center;
+}
+footer .logo { font-size: 20px; }
+footer .links a {
+  font-size: 14px; color: var(--ink-soft);
+  text-decoration: none; margin-left: 22px;
+}
+footer .links a:hover { color: var(--accent); }
+
+/* ---- ENTRANCE ANIMATION ---- */
+.fade-up {
+  opacity: 0; transform: translateY(20px);
+  animation: fadeUp .7s ease forwards;
+}
+.fade-up:nth-child(1) { animation-delay: .05s; }
+.fade-up:nth-child(2) { animation-delay: .15s; }
+.fade-up:nth-child(3) { animation-delay: .25s; }
+@keyframes fadeUp {
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- RESPONSIVE ---- */
+@media (max-width: 760px) {
+  .problem-grid, .steps-grid { grid-template-columns: 1fr; }
+  .signup { flex-direction: column; }
+  .btn { width: 100%; }
+  footer { flex-direction: column; gap: 16px; text-align: center; }
+  footer .links a { margin: 0 11px; }
+  .hero { padding: 50px 0 60px; }
+  section { padding: 54px 0; }
+}
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <nav>
+    <div class="logo">mik<span>a</span>si</div>
+    <a href="#warteliste" class="nav-link">Auf die Warteliste →</a>
+  </nav>
+</div>
+
+<!-- HERO -->
+<div class="wrap">
+  <header class="hero">
+    <div class="eyebrow fade-up">Bald verfügbar</div>
+    <h1 class="fade-up">Vermietung.<br><em>Endlich einfach.</em></h1>
+    <p class="sub fade-up">
+      Mikasi führt Sie Schritt für Schritt durch die Vermietung Ihrer Wohnung –
+      von der Anfrage über die Besichtigung bis zum Mietvertrag. Ohne Papierchaos,
+      ohne Zettelwirtschaft.
+    </p>
+    <form class="signup fade-up" onsubmit="return handleSignup(event, 'hero')">
+      <input type="email" id="email-hero" placeholder="Ihre E-Mail-Adresse" required>
+      <button type="submit" class="btn">Platz sichern</button>
+    </form>
+    <p class="form-note fade-up">Kostenlos. Unverbindlich. Wir melden uns zum Start.</p>
+    <div class="form-success" id="success-hero">
+      ✓ Vielen Dank! Sie stehen auf der Warteliste – wir melden uns, sobald Mikasi startet.
+    </div>
+  </header>
+</div>
+
+<!-- PROBLEM -->
+<section class="problem">
+  <div class="wrap">
+    <div class="section-head">
+      <h2>Vermieten kostet Nerven</h2>
+      <p>Drei Dinge, die jede Vermietung anstrengend machen – und die Mikasi übernimmt.</p>
+    </div>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <div class="num">01</div>
+        <h3>Endlose Anfragen</h3>
+        <p>Dutzende E-Mails, immer dieselben Rückfragen, kein Überblick, wer wirklich passt.</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">02</div>
+        <h3>Termin-Chaos</h3>
+        <p>Besichtigungen per Telefon koordinieren, Absagen, Verschiebungen, Doppelbuchungen.</p>
+      </div>
+      <div class="problem-card">
+        <div class="num">03</div>
+        <h3>Unterlagen-Wirrwarr</h3>
+        <p>Selbstauskünfte auf Papier, fehlende Nachweise, mühsames Vergleichen der Bewerber.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- STEPS -->
+<section>
+  <div class="wrap">
+    <div class="section-head">
+      <h2>So einfach geht es mit Mikasi</h2>
+      <p>Ein klarer Weg statt verstreuter Werkzeuge.</p>
+    </div>
+    <div class="steps-grid">
+      <div class="step">
+        <div class="circle">1</div>
+        <h3>Objekt anlegen</h3>
+        <p>Wohnung eintragen, Fotos hochladen – einen Link bekommen, den Sie überall teilen können.</p>
+      </div>
+      <div class="step">
+        <div class="circle">2</div>
+        <h3>Interessenten verwalten</h3>
+        <p>Anfragen, Selbstauskünfte und Besichtigungen laufen zentral und übersichtlich zusammen.</p>
+      </div>
+      <div class="step">
+        <div class="circle">3</div>
+        <h3>Entspannt entscheiden</h3>
+        <p>Alle Bewerber im klaren Vergleich – und der passende Mietvertrag ist schnell erstellt.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CLOSING CTA -->
+<div class="wrap">
+  <section class="closing" id="warteliste">
+    <h2>Seien Sie von Anfang an dabei</h2>
+    <p>Mikasi startet bald. Tragen Sie sich ein und gehören Sie zu den Ersten.</p>
+    <form class="signup" onsubmit="return handleSignup(event, 'foot')">
+      <input type="email" id="email-foot" placeholder="Ihre E-Mail-Adresse" required>
+      <button type="submit" class="btn">Auf die Warteliste</button>
+    </form>
+    <p class="form-note">Kein Spam. Nur eine Nachricht, wenn es losgeht.</p>
+    <div class="form-success" id="success-foot">
+      ✓ Vielen Dank! Sie stehen auf der Warteliste – wir melden uns, sobald Mikasi startet.
+    </div>
+  </section>
+</div>
+
+<!-- FOOTER -->
+<div class="wrap">
+  <footer>
+    <div class="logo">mik<span>a</span>si</div>
+    <div class="links">
+      <a href="#">Impressum</a>
+      <a href="#">Datenschutz</a>
+      <a href="#warteliste">Kontakt</a>
+    </div>
+  </footer>
+</div>
+
+<script>
+function handleSignup(event, where) {
+  event.preventDefault();
+  var input = document.getElementById('email-' + where);
+  var success = document.getElementById('success-' + where);
+  var form = event.target;
+  // Einfache E-Mail-Validierung
+  if (!input.value || input.value.indexOf('@') === -1) return false;
+  // In der echten Version: hier die E-Mail an euren Dienst senden
+  // (z.B. an einen Formular-Service oder eure eigene API)
+  form.style.display = 'none';
+  success.style.display = 'block';
+  // Optionale Notiz für die Konsole
+  console.log('Wartelisten-Anmeldung:', input.value);
+  return false;
+}
+</script>
+
+</body>
+</html>
