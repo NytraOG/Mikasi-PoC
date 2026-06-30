@@ -1,31 +1,36 @@
 html, body {
-    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: 'Outfit', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
     background-color: var(--mud-palette-background);
     color: var(--mud-palette-text-primary);
 }
 
+/* Große Display-Überschriften in der Serifenschrift Fraunces (kleinere bleiben Outfit) */
 .mud-typography-h1,
 .mud-typography-h2,
 .mud-typography-h3,
-.mud-typography-h4,
+.mud-typography-h4 {
+    font-family: 'Fraunces', Georgia, serif !important;
+    letter-spacing: -0.018em;
+}
+
 .mud-typography-h5,
 .mud-typography-h6 {
-    font-family: 'Plus Jakarta Sans', 'Inter', sans-serif !important;
-    letter-spacing: -0.015em;
+    font-family: 'Outfit', system-ui, sans-serif !important;
+    letter-spacing: -0.008em;
 }
 
 .blackshield-page-title {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 700;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
     letter-spacing: -0.02em;
 }
 
 .blackshield-brand {
-    font-family: 'Plus Jakarta Sans', sans-serif;
-    font-weight: 800;
-    letter-spacing: -0.03em;
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    letter-spacing: -0.01em;
 }
 
 .blackshield-stat-card {
@@ -63,7 +68,7 @@ html, body {
 }
 
 .blackshield-auth-hero {
-    background: linear-gradient(135deg, #0F172A 0%, #1E1B4B 60%, #312E81 100%);
+    background: linear-gradient(150deg, #1A1D1A 0%, #20302A 55%, #2F6B4F 135%);
     color: white;
     position: relative;
     overflow: hidden;
@@ -73,8 +78,8 @@ html, body {
     content: "";
     position: absolute;
     inset: 0;
-    background-image: radial-gradient(circle at 20% 15%, rgba(99, 102, 241, 0.35), transparent 45%),
-    radial-gradient(circle at 80% 80%, rgba(245, 158, 11, 0.20), transparent 50%);
+    background-image: radial-gradient(circle at 18% 12%, rgba(94, 144, 121, 0.40), transparent 48%),
+    radial-gradient(circle at 82% 85%, rgba(194, 133, 62, 0.18), transparent 52%);
     pointer-events: none;
 }
 

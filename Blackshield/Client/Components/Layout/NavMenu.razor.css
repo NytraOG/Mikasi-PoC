@@ -8,18 +8,7 @@
 }
 
 .blackshield-nav-brand {
-    padding: 20px 20px 16px 20px;
-}
-
-.blackshield-nav-brand-mark {
-    width: 40px;
-    height: 40px;
-    border-radius: 10px;
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.18), rgba(245, 158, 11, 0.14));
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border: 1px solid var(--mud-palette-lines-default);
+    padding: 22px 20px 16px 20px;
 }
 
 ::deep .blackshield-nav-divider {
@@ -56,7 +45,7 @@
 }
 
 ::deep .blackshield-nav-menu .mud-nav-link:hover {
-    background-color: rgba(99, 102, 241, 0.08) !important;
+    background-color: rgba(47, 107, 79, 0.08) !important;
     color: var(--mud-palette-text-primary) !important;
 }
 
@@ -65,7 +54,7 @@
 }
 
 ::deep .blackshield-nav-menu .mud-nav-link.active {
-    background-color: rgba(99, 102, 241, 0.14) !important;
+    background-color: rgba(47, 107, 79, 0.12) !important;
     color: var(--mud-palette-primary) !important;
     border-left: 3px solid var(--mud-palette-primary);
     padding-left: 13px;
@@ -81,7 +70,7 @@
 }
 
 ::deep .blackshield-upsell-card {
-    background: linear-gradient(135deg, rgba(99, 102, 241, 0.12), rgba(245, 158, 11, 0.10)) !important;
+    background: linear-gradient(135deg, rgba(47, 107, 79, 0.12), rgba(194, 133, 62, 0.10)) !important;
     border: 1px solid var(--mud-palette-lines-default);
     border-radius: 14px !important;
 }

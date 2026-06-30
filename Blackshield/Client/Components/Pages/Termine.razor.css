@@ -34,12 +34,12 @@
     font-weight: 700;
     color: var(--mud-palette-text-primary);
     line-height: 1.2;
-    font-family: 'Plus Jakarta Sans', sans-serif;
+    font-family: 'Fraunces', Georgia, serif;
 }
 
 .calendar-col-header.today .day-number {
     color: var(--mud-palette-primary);
-    background: rgba(79, 70, 229, 0.10);
+    background: rgba(47, 107, 79, 0.12);
     width: 32px;
     height: 32px;
     line-height: 32px;
@@ -70,23 +70,23 @@
 }
 
 .calendar-event.primary {
-    background-color: rgba(79, 70, 229, 0.08);
-    border-left-color: #4F46E5;
+    background-color: rgba(47, 107, 79, 0.10);
+    border-left-color: #2F6B4F;
 }
 
 .calendar-event.secondary {
-    background-color: rgba(245, 158, 11, 0.10);
-    border-left-color: #F59E0B;
+    background-color: rgba(194, 133, 62, 0.12);
+    border-left-color: #C2853E;
 }
 
 .calendar-event.success {
-    background-color: rgba(16, 185, 129, 0.10);
-    border-left-color: #10B981;
+    background-color: rgba(59, 139, 94, 0.12);
+    border-left-color: #3B8B5E;
 }
 
 .calendar-event.warning {
-    background-color: rgba(244, 114, 22, 0.10);
-    border-left-color: #F97316;
+    background-color: rgba(189, 107, 60, 0.14);
+    border-left-color: #BD6B3C;
 }
 
 .event-time {

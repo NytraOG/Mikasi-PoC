@@ -4,7 +4,7 @@
 @using Domain.Services
 @attribute [StreamRendering]
 
-<PageTitle>Objekte · Blackshield</PageTitle>
+<PageTitle>Objekte · mikasi</PageTitle>
 
 <MudStack Spacing="6">
 
@@ -90,7 +90,7 @@
             {
                 <MudItem xs="12" sm="6" md="4" lg="3">
                     <MudPaper Elevation="1" Class="blackshield-property-card" Style="border-radius: 16px; cursor: pointer;" @onclick="@(() => GoToDetail(nutzungseinheit.Id))">
-                        <div class="property-image" style="@("background-image: linear-gradient(135deg, #8B5CF6 0%, #A78BFA 100%);")">
+                        <div class="property-image" style="@("background-image: linear-gradient(135deg, #2F6B4F 0%, #5E9079 100%);")">
                             <MudChip T="string"
                                      Class="status-chip"
                                      Size="Size.Small"
@@ -101,7 +101,7 @@
                             <div style="position: absolute; bottom: 12px; right: 12px;">
                                 <MudIconButton Icon="@Icons.Material.Filled.MoreHoriz"
                                                Color="Color.Inherit"
-                                               Style="background: rgba(255,255,255,0.85); color: #0F172A;"
+                                               Style="background: rgba(255,255,255,0.85); color: #1A1D1A;"
                                                Size="Size.Small"/>
                             </div>
                         </div>
@@ -161,7 +161,7 @@
                 <RowTemplate Context="row">
                     <MudTd DataLabel="Bezeichnung">
                         <MudStack Row="true" Spacing="3" AlignItems="AlignItems.Center">
-                            <div class="property-thumb" style="@("background: linear-gradient(135deg, #8B5CF6, #A78BFA);")"></div>
+                            <div class="property-thumb" style="@("background: linear-gradient(135deg, #2F6B4F, #5E9079);")"></div>
                             <MudText Typo="Typo.body2" Style="font-weight: 600;">@row.Bezeichnung</MudText>
                         </MudStack>
                     </MudTd>
